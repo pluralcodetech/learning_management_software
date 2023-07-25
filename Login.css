@@ -1,0 +1,192 @@
+@font-face {
+  font-family: "Gilroy_Thin";
+  src: url(../assets/fonts/Gilroy-Thin.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Regular";
+  src: url(../assets/fonts/Gilroy-Regular.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Medium";
+  src: url(../assets/fonts/Gilroy-Medium.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Semibold";
+  src: url(../assets/fonts/Gilroy-SemiBold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Bold";
+  src: url(../assets/fonts/Gilroy-Bold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Black";
+  src: url(../assets/fonts/Gilroy-Black.ttf);
+}
+
+:root {
+  /* //font family */
+  --font-gilroy-thin: "Gilroy_Thin", sans-serif;
+  --font-gilroy-regular: "Gilroy_Regular", sans-serif;
+  --font-gilroy-medium: "Gilroy_Medium", sans-serif;
+  --font-gilroy-semibold: "Gilroy_Semibold", sans-serif;
+  --font-gilroy-bold: "Gilroy_Bold", sans-serif;
+  --font-gilroy-black: "Gilroy_Black", sans-serif;
+  /* //font size */
+  --heading-1: 36px;
+  --big-test: 20px;
+  --normal-text: 17px;
+  --small-text: 15px;
+  /* //colors */
+  --pc-blue: #222057;
+  --pc-black: #232323;
+  --pc-orange: #f8991d;
+  --pc-light-gray: #939393;
+  --pc-dark-gray: #323232;
+  --pc-white-white: #ffffff;
+  --pc-bg: #f5f6fa;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  padding: 0;
+  margin: 0;
+  overflow-y: hidden;
+  background-color: var(--pc-bg);
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+/* Utility Classes */
+.btn {
+  font-family: var(--font-gilroy-semibold);
+  font-size: var(--normal-text);
+  background-color: var(--pc-orange);
+  border: none;
+  outline: none;
+  color: var(--pc-white-white);
+  letter-spacing: 1px;
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 5px;
+}
+.input {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 5px;
+  border: 1px solid #2220574e;
+  outline: none;
+}
+body main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+}
+main .Login__Form {
+  background-color: var(--pc-white-white);
+  height: 100vh;
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+}
+.Login__Form .CTA {
+  width: 100%;
+  height: max-content;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  flex-direction: column;
+}
+.Login__Form .CTA h1 {
+  font-family: var(--font-gilroy-medium);
+  font-size: var(--heading-1);
+  color: var(--pc-blue);
+  line-height: 1;
+}
+.Login__Form .CTA p {
+  margin-top: -1rem;
+  font-size: var(--normal-text);
+  font-family: var(--font-gilroy-regular);
+}
+.Login__Form form {
+  margin-top: 2rem;
+  width: 100%;
+}
+form .Email__Form,
+form .Password__Form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.Email__Form label,
+.Password__Form label {
+  font-family: var(--font-gilroy-regular);
+  font-size: var(--normal-text);
+  color: var(--pc-black);
+  margin-bottom: 11px;
+}
+.Password__Form {
+  margin-bottom: 18px;
+}
+.Password__Form label {
+  margin-top: 22px;
+}
+.Email__Form input::placeholder,
+.Password__Form input::placeholder {
+  font-family: var(--font-gilroy-regular);
+  font-size: var(--small-text);
+}
+.Remember__Me {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 50px;
+}
+.Remember__Me a {
+  font-size: var(--small-text);
+  font-family: var(--font-gilroy-semibold);
+  color: var(--pc-blue);
+}
+.Remember__Me span {
+  font-family: var(--font-gilroy-regular);
+  color: var(--pc-dark-gray);
+  font-size: var(--small-text);
+}
+.Remember__Checkbox input[type="checkbox"] {
+  margin-right: 8px;
+}
+.navigate {
+  margin-top: 2.8rem;
+  text-align: center;
+  font-family: var(--font-gilroy-regular);
+}
+.navigate span {
+  font-family: var(--font-gilroy-medium);
+  font-size: var(--normal-text);
+  color: var(--pc-orange);
+}
+main .Login__Image {
+  position: relative;
+  background-color: var(--pc-white-white);
+  height: 100vh;
+  width: 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+main .Login__Image img {
+  width: 70%;
+  height: auto;
+  z-index: 3;
+}
+
+.Login__Image .Ribbon {
+  z-index: 1;
+  position: absolute;
+  border: 1px solid #00f;
+}

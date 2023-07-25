@@ -1,0 +1,168 @@
+@font-face {
+  font-family: "Gilroy_Thin";
+  src: url(../assets/fonts/Gilroy-Thin.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Regular";
+  src: url(../assets/fonts/Gilroy-Regular.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Medium";
+  src: url(../assets/fonts/Gilroy-Medium.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Semibold";
+  src: url(../assets/fonts/Gilroy-SemiBold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Bold";
+  src: url(../assets/fonts/Gilroy-Bold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Black";
+  src: url(../assets/fonts/Gilroy-Black.ttf);
+}
+
+:root {
+  /* //font family */
+  --font-gilroy-thin: "Gilroy_Thin", sans-serif;
+  --font-gilroy-regular: "Gilroy_Regular", sans-serif;
+  --font-gilroy-medium: "Gilroy_Medium", sans-serif;
+  --font-gilroy-semibold: "Gilroy_Semibold", sans-serif;
+  --font-gilroy-bold: "Gilroy_Bold", sans-serif;
+  --font-gilroy-black: "Gilroy_Black", sans-serif;
+  /* //font size */
+  --heading-1: 36px;
+  --big-test: 20px;
+  --normal-text: 17px;
+  --small-text: 15px;
+  /* //colors */
+  --pc-blue: #222057;
+  --pc-black: #232323;
+  --pc-orange: #f8991d;
+  --pc-light-gray: #939393;
+  --pc-dark-gray: #323232;
+  --pc-white-white: #ffffff;
+  --pc-bg: #f5f6fa;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--pc-bg);
+  text-align: center;
+}
+
+h1 {
+  color: var(--pc-blue);
+  font-size: var(--heading-1);
+  font-family: var(--font-gilroy-medium);
+}
+
+p {
+  margin-top: 10px;
+  margin-bottom: 2.5rem;
+  color: var(--pc-blue);
+  font-family: var(--font-gilroy-regular);
+  font-size: var(--normal-text);
+  color: var(--pc-black);
+}
+
+.container {
+  margin: auto;
+  margin-top: 6rem;
+  background: var(--pc-white-white);
+  width: 40%;
+  height: max-content;
+  padding: 5rem 4rem 4rem 4rem;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px var(--pc-light-gray);
+}
+
+.container > div > h1 {
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+
+form label {
+  font-family: var(--font-gilroy-regular);
+  font-size: var(--normal-text);
+  color: var(--pc-black);
+  margin-bottom: 11px;
+}
+
+form input {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 5px;
+  border: 1px solid #2220574e;
+  outline: none;
+  font-size: var(--normal-text);
+  margin-bottom: 35px;
+}
+.inputs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 2rem;
+}
+
+.code-input {
+  width: 47px;
+  height: 45px;
+  padding: 15px 18px;
+  border-radius: 5px;
+  border: 1px solid #2220574e;
+  outline: none;
+  font-size: var(--normal-text);
+  margin-bottom: 35px;
+}
+
+.countdown {
+  text-align: center;
+  margin: auto;
+}
+
+.countdown span:nth-child(1) {
+  color: var(--pc-blue);
+  font-size: var(--normal-text);
+  font-family: var(--font-gilroy-semibold);
+  margin-right: 8px;
+}
+.countdown span:nth-child(2) {
+  color: #23232371;
+  font-size: var(--normal-text);
+  font-family: var(--font-gilroy-semibold);
+  margin-right: 8px;
+}
+
+form input::placeholder {
+  font-family: var(--font-gilroy-regular);
+  font-size: var(--small-text);
+}
+
+form button {
+  font-family: var(--font-gilroy-semibold);
+  font-size: var(--normal-text);
+  background-color: var(--pc-orange);
+  border: none;
+  outline: none;
+  color: var(--pc-white-white);
+  letter-spacing: 1px;
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 5px;
+}
