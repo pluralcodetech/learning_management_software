@@ -28,12 +28,12 @@
 :root {
   /* //font family */
   --font-gilroy-thin: "Gilroy_Thin", sans-serif;
-  /* 
+
   --font-gilroy-regular: "Gilroy_Regular", sans-serif;
   --font-gilroy-medium: "Gilroy_Medium", sans-serif;
   --font-gilroy-semibold: "Gilroy_Semibold", sans-serif;
   --font-gilroy-bold: "Gilroy_Bold", sans-serif;
-  --font-gilroy-black: "Gilroy_Black", sans-serif; */
+  --font-gilroy-black: "Gilroy_Black", sans-serif;
   /* //font size */
   --heading-1: 36px;
   --heading-2: 24px;
@@ -55,7 +55,6 @@
   padding: 0;
   margin: 0;
   -webkit-font-smoothing: antialiased;
-  font-family: "Montserrat", sans-serif;
 }
 a {
   text-decoration: none;
@@ -81,6 +80,7 @@ main section:first-of-type {
   width: 25vw;
   background-color: var(--pc-white-white);
   border-right: 1px solid #32323228;
+  font-family: var(--font-gilroy-regular);
 }
 main section:first-of-type .logo {
   padding: 35px;
@@ -98,9 +98,7 @@ main section:last-of-type {
 /* Dashboardbody */
 .dashboard_body {
   padding: 35px;
-  height: calc(
-    100vh - 70px
-  ); /* Subtract the height of the header from the full viewport height */
+  height: calc(100vh - 70px);
   overflow-y: scroll;
   position: relative;
 }
@@ -115,18 +113,34 @@ main section:last-of-type .header {
   justify-content: space-between;
 }
 nav .nav-item {
-  font-size: var(--normal-text);
+  font-size: var(--big-text);
   color: var(--pc-dark-gray);
-  font-family: var(--font-gilroy-thin);
+  font-family: var(--font-gilroy-regular);
   display: flex;
   align-items: center;
   justify-content: start;
   gap: 8px;
-}
-.nav-item {
-  padding: 18px 45px;
+  padding: 18px 35px;
   margin-bottom: 25px;
   width: 100%;
+  position: relative;
+}
+.nav-item i {
+  font-size: 25px;
+}
+.nav-item.active {
+  font-family: var(--font-gilroy-medium);
+  color: var(--pc-orange);
+  background-color: var(--pc-bg);
+}
+.nav-item.active .nav_item_line {
+  height: 65%;
+  background-color: var(--pc-orange);
+  width: 6px;
+  position: absolute;
+  left: 0;
+  border-top-right-radius: 30%;
+  border-bottom-right-radius: 30%;
 }
 .profile_nav {
   display: flex;
@@ -162,7 +176,7 @@ nav .nav-item {
   position: relative;
 }
 .search input {
-  width: 268px;
+  width: 350px;
   padding: 10px 30px;
   border-radius: 8px;
   background-color: var(--pc-bg);
