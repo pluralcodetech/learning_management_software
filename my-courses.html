@@ -82,47 +82,30 @@
             </div>
           </div>
           <div class="dashboard_body">
-            <div class="cards">
-              <div class="card">
-                <i class="bx bxs-wallet"></i>
-                <div>
-                  <h3>My Balance</h3>
-                  <p>Outstanding Balance: <span>N60,000</span></p>
-                </div>
-              </div>
-              <div class="card">
-                <i class="bx bx-book-content"></i>
-                <div>
-                  <h3>My Courses</h3>
-                  <p>2 Register Course</p>
-                </div>
-              </div>
+            <div class="community__">
+              <a href="./dashboard.html">&larr; Go Back</a>
+              <button><i class="bx bxl-slack"></i>Cohort Community</button>
             </div>
-            <div class="filter_buttons">
-              <div>
-                <button id="my_courses_button">My Courses</button>
-                <div class="line"></div>
-              </div>
-              <div>
-                <button id="certificates_button">Certificates</button>
-                <div class="line"></div>
-              </div>
-            </div>
-            <div class="course_cards" id="course_cards"></div>
-            <div class="view_certificate_modal" id="certificate_modal">
-              <div class="view_certificate_modal_container">
-                <i class="bx bx-x" id="close_cert"></i>
-                <div class="view_certificate_modal_details" >
-                  <img src="./assets/certificate_modal.png" alt="" />
-                  <span>Completed by Mabel Okeke</span>
-                  <small>August 25, 2023</small>
-                  <p>
-                    PluralCode certifies their successful completion of Product
-                    Design Course
-                  </p>
-                  <button><i class="bx bx-download"></i>Download</button>
+            <div class="course_page_details">
+              <div class="course_page_header">
+                <h3>Product Design</h3>
+                <div class="course_page_search">
+                  <input
+                    type="search"
+                    placeholder="Search module"
+                    name="search"
+                    id=""
+                  />
+                  <button>Search</button>
                 </div>
               </div>
+              <div class="course_page_filters">
+                <button>Course Modules</button>
+                <button>Resources</button>
+                <button>Payment Status</button>
+              </div>
+              <div class="course_page_cards"></div>
+            </div>
           </div>
         </div>
       </section>
