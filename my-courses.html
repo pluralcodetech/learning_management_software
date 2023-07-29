@@ -15,7 +15,7 @@
     />
     <link rel="stylesheet" href="./dashboard.css" />
   </head>
-  <body>
+  <body class="my_course">
     <main>
       <section>
         <div class="logo">
@@ -26,12 +26,7 @@
             <div class="nav-item">
               <div class="nav_item_line"></div>
               <i class="bx bxs-dashboard"></i>
-              <a href="./dashboard.html"> Dashboard </a>
-            </div>
-            <div class="nav-item">
-              <div class="nav_item_line"></div>
-              <i class="bx bx-message-rounded-edit"></i>
-              <a href="student-advisor.html">Student Advisors</a>
+              <a href="./dashboard.html"> My Courses </a>
             </div>
             <div class="nav-item">
               <div class="nav_item_line"></div>
@@ -100,16 +95,142 @@
                 </div>
               </div>
               <div class="course_page_filters">
-                <button>Course Modules</button>
-                <button>Resources</button>
-                <button>Payment Status</button>
+                <button class="active" data-filter="modules">Course Modules</button>
+                <button data-filter="resources">Resources</button>
+                <button data-filter="payment">Payment Status</button>
               </div>
-              <div class="course_page_cards"></div>
+              <div class="course_page_cards">
+                <div class="modules">
+                  <!-- Content for Course Modules -->
+                  <div class="module_container">
+                    <div class="module_details">
+                      <img src="./assets/course_module_img.png" alt="" />
+                      <div>
+                        <span class="module_title"
+                          >Course | Product Design (UI/UX)</span
+                        >
+                        <h3 class="module_course_title">
+                          Module 1 - Introduction to Product Design (UI/UX)
+                        </h3>
+                        <span class="module_lesson_progress"
+                          ><i class="bx bx-laptop"></i> 5 Lessons & 1
+                          Assessment</span
+                        >
+                        <div class="loading-bar">
+                          <div class="progress"></div>
+                        </div>
+                        <span class="progress_text">23% Overall Progress</span>
+                      </div>
+                    </div>
+                    <div class="module_nextup">
+                      <span>Next Up</span>
+                      <h3>
+                        <i class="bx bxs-videos"></i>Importance of management
+                      </h3>
+                      <span class="module_nextup_progress"
+                        >Module 2 | 5 Lessons</span
+                      >
+                      <button>Continue Module</button>
+                    </div>
+                  </div>
+                  <div class="module_container">
+                    <div class="module_details">
+                      <img src="./assets/course_module_img.png" alt="" />
+                      <div>
+                        <span class="module_title"
+                          >Course | Product Design (UI/UX)</span
+                        >
+                        <h3 class="module_course_title">
+                          Module 2 - Understanding Tools (Figma, Adobe XD &
+                          etc.)
+                        </h3>
+                        <span class="module_lesson_progress"
+                          ><i class="bx bx-laptop"></i> 5 Lessons & 1
+                          Assessment</span
+                        >
+                        <div class="loading-bar">
+                          <div class="progress"></div>
+                        </div>
+                        <span class="progress_text">23% Overall Progress</span>
+                      </div>
+                    </div>
+                    <div class="module_nextup">
+                      <span>Next Up</span>
+                      <h3>
+                        <i class="bx bxs-videos"></i>Importance of management
+                      </h3>
+                      <span class="module_nextup_progress"
+                        >Module 2 | 5 Lessons</span
+                      >
+                      <button>Continue Module</button>
+                    </div>
+                  </div>
+                  <div class="module_container">
+                    <div class="module_details">
+                      <img src="./assets/course_module_img.png" alt="" />
+                      <div>
+                        <span class="module_title"
+                          >Course | Product Design (UI/UX)</span
+                        >
+                        <h3 class="module_course_title">
+                          Module 3 - Understanding of Alignment
+                        </h3>
+                        <span class="module_lesson_progress"
+                          ><i class="bx bx-laptop"></i> 5 Lessons & 1
+                          Assessment</span
+                        >
+                        <div class="loading-bar">
+                          <div class="progress"></div>
+                        </div>
+                        <span class="progress_text">23% Overall Progress</span>
+                      </div>
+                    </div>
+                    <div class="module_nextup">
+                      <span>Next Up</span>
+                      <h3>
+                        <i class="bx bxs-videos"></i>Importance of management
+                      </h3>
+                      <span class="module_nextup_progress"
+                        >Module 2 | 5 Lessons</span
+                      >
+                      <button>Continue Module</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="resources" style="display: none">
+                  <!-- Content for Resources -->
+                  <div class="resources_container">
+                    <div class="resources">
+                      <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                      <div>
+                        <span>Introduction to User Experience Design.pdf</span>
+                        <span class="date">Sept 2, 2022</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="payment" style="display: none">
+                  <!-- Content for Payment Status -->
+                  <h3>Card Payment</h3>
+                  <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Repellat, impedit soluta. Temporibus sunt tenetur sint!
+                  </p>
+                  <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Repellat, impedit soluta. Temporibus sunt tenetur sint!
+                  </p>
+                  <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Repellat, impedit soluta. Temporibus sunt tenetur sint!
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
     </main>
-    <script src="./dashboard.js"></script>
+    <script src="./my-courses.js"></script>
   </body>
 </html>
