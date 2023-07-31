@@ -1247,6 +1247,23 @@ nav .nav-item {
     justify-content: center;
     gap: 18px;
   }
+  .view_certificate_modal {
+    height: 100%;
+  }
+  .view_certificate_modal_details p {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .view_certificate_modal_container {
+    width: 90%;
+    margin: auto;
+    margin-top: 6%;
+    padding: 1.5rem;
+    display: flex;
+  }
+  .view_certificate_modal_details button {
+    width: 100%;
+  }
   .course_card_certificate img {
     width: 100%;
     height: max-content;
@@ -1357,7 +1374,7 @@ nav .nav-item {
   nav .nav-item {
     padding: 18px 15px;
   }
-  nav .nav-item a i{
+  nav .nav-item a i {
     font-size: 40px;
   }
   nav .nav-item a span {
@@ -1428,6 +1445,23 @@ nav .nav-item {
     flex-direction: column;
     justify-content: center;
     gap: 18px;
+  }
+  .view_certificate_modal {
+    height: 100%;
+  }
+  .view_certificate_modal_details p {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .view_certificate_modal_container {
+    width: 90%;
+    margin: auto;
+    margin-top: 6%;
+    padding: 1.5rem;
+    display: flex;
+  }
+  .view_certificate_modal_details button {
+    width: 100%;
   }
   .course_card_certificate img {
     width: 100%;
