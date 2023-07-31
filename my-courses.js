@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // JavaScript to handle filter button clicks and div visibility
 const buttons = document.querySelectorAll(".course_page_filters button");
 const divs = document.querySelectorAll(".course_page_cards > div");
+const buttonsToHide = document.querySelectorAll(
+  ".hide_community_button, .hide_search_bar"
+);
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -54,6 +57,17 @@ buttons.forEach((button) => {
         div.style.display = "none";
       }
     });
+
+    // Hide specific buttons when the "Payment Status" filter is clicked
+    if (target === "payment") {
+      buttonsToHide.forEach((btn) => {
+        btn.style.display = "none";
+      });
+    } else {
+      buttonsToHide.forEach((btn) => {
+        btn.style.display = "inline-block"; // or "block" depending on your buttons' display style
+      });
+    }
   });
 });
 
@@ -66,3 +80,43 @@ const initialActiveDiv = document.querySelector(`.${initialTarget}`);
 if (initialActiveDiv) {
   initialActiveDiv.style.display = "block";
 }
+
+// copy bank details
+const copy_bank_details = document.getElementById("copy_bank_details");
+
+copy_bank_details.addEventListener("click", copyDetails);
+
+function copyDetails() {
+  let account_number_input = document.getElementById("account_number");
+  let account_number_tooltip = document.getElementById(
+    "account_number_tooltip"
+  );
+
+  account_number_input.select();
+  document.execCommand("copy");
+
+  account_number_tooltip.innerHTML = "Account Number Copied";
+
+  // Show the tooltip
+  account_number_tooltip.style.display = "flex";
+
+  // Hide the tooltip after 3 seconds
+  setTimeout(function () {
+    account_number_tooltip.innerHTML = "";
+    account_number_tooltip.style.display = "none";
+  }, 3000);
+}
+
+// Payment section popup
+const showPaymentButton = document.getElementById("show_payment_button");
+const paymentCCSection = document.querySelector(".payment_CC");
+
+showPaymentButton.addEventListener("click", function () {
+  paymentCCSection.style.display = "block";
+});
+
+const closePaymentCCButton = document.getElementById("close_payment_CC");
+
+closePaymentCCButton.addEventListener("click", function () {
+  paymentCCSection.style.display = "none";
+});

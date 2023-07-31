@@ -79,12 +79,14 @@
           <div class="dashboard_body">
             <div class="community__">
               <a href="./dashboard.html">&larr; Go Back</a>
-              <button><i class="bx bxl-slack"></i>Cohort Community</button>
+              <button class="hide_community_button">
+                <i class="bx bxl-slack"></i>Cohort Community
+              </button>
             </div>
             <div class="course_page_details">
               <div class="course_page_header">
                 <h3>Product Design</h3>
-                <div class="course_page_search">
+                <div class="course_page_search hide_search_bar">
                   <input
                     type="search"
                     placeholder="Search module"
@@ -95,7 +97,9 @@
                 </div>
               </div>
               <div class="course_page_filters">
-                <button class="active" data-filter="modules">Course Modules</button>
+                <button class="active" data-filter="modules">
+                  Course Modules
+                </button>
                 <button data-filter="resources">Resources</button>
                 <button data-filter="payment">Payment Status</button>
               </div>
@@ -200,30 +204,228 @@
                 <div class="resources" style="display: none">
                   <!-- Content for Resources -->
                   <div class="resources_container">
-                    <div class="resources">
-                      <div><img src="./assets/drive_icon.jpg" alt="" /></div>
-                      <div>
-                        <span>Introduction to User Experience Design.pdf</span>
-                        <span class="date">Sept 2, 2022</span>
-                      </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="resource">
+                      <a href="">
+                        <div><img src="./assets/drive_icon.jpg" alt="" /></div>
+                        <div>
+                          <span
+                            >Introduction to User Experience Design.pdf</span
+                          >
+                          <span>Sept 2, 2022</span>
+                        </div>
+                      </a>
                     </div>
                   </div>
                 </div>
                 <div class="payment" style="display: none">
                   <!-- Content for Payment Status -->
-                  <h3>Card Payment</h3>
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Repellat, impedit soluta. Temporibus sunt tenetur sint!
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Repellat, impedit soluta. Temporibus sunt tenetur sint!
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Repellat, impedit soluta. Temporibus sunt tenetur sint!
-                  </p>
+                  <div class="payment_container">
+                    <span>Total Amount Paid</span>
+                    <h3>N60,000</h3>
+                    <p>
+                      Outstanding Payment for Product Design:
+                      <span>N60,000</span>
+                    </p>
+                    <p>
+                      NB: You are to make your outstanding payment on or before
+                      Sept 1, 2022
+                    </p>
+                    <button id="show_payment_button">Complete Payment</button>
+                  </div>
+                  <!-- // Credit card -->
+                  <div class="payment_CC">
+                    <div class="payment_CC_header">
+                      <h3>Complete Your Outstanding Payment</h3>
+                      <i class="bx bx-x" id="close_payment_CC"></i>
+                    </div>
+                    <div class="payment_CC_forms">
+                      <div class="payment_CC_radios">
+                        <span>Payment Method</span>
+                        <div>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Credit Card
+                          </label>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Bank Transfer
+                          </label>
+                        </div>
+                      </div>
+                      <form action="" class="payment_CC_form">
+                        <span>Insert Card Details</span>
+                        <div>
+                          <label for="card-name">Card Name</label>
+                          <input
+                            type="text"
+                            placeholder="Enter the name on your card"
+                          />
+                        </div>
+                        <div>
+                          <label for="card-number">Card Number</label>
+                          <div class="card_number_container">
+                            <input
+                              type="password"
+                              placeholder="XXXX XXXX XXXX XXXX"
+                            />
+                            <i class="bx bxs-credit-card"></i>
+                          </div>
+                        </div>
+                        <div class="card_CVV_ED">
+                          <div>
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" placeholder="--/--" />
+                          </div>
+                          <div>
+                            <label for="cvv-code">CVV Code</label>
+                            <input type="text" placeholder="---" />
+                          </div>
+                        </div>
+                        <div class="student_policy">
+                          <input type="checkbox" name="student_policy" id="" />
+                          <span
+                            >By clicking on pay now, you agree to our students
+                            policy</span
+                          >
+                        </div>
+                        <button>Pay Now</button>
+                      </form>
+                    </div>
+                  </div>
+                  <!-- // Bank transfer -->
+
+                  <div class="payment_bank">
+                    <div class="payment_bank_header">
+                      <h3>Complete Your Oustanding Payment</h3>
+                      <i class="bx bx-x"></i>
+                    </div>
+                    <div class="payment_bank_forms">
+                      <div class="payment_bank_radios">
+                        <span>Payment Method</span>
+                        <div>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Credit Card
+                          </label>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Bank Transfer
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="payment_bank_details">
+                      <span>Bank Details</span>
+                      <span>Wema Bank</span>
+                      <span>
+                        <span>Account Name:</span> PluralCode Technologies
+                      </span>
+                      <!-- // span 4 -->
+                      <span>
+                        <div class="account_number_container">
+                          <label for="account_number">Account Number: </label>
+                          <input
+                            type="text"
+                            id="account_number"
+                            value="0089765346"
+                          />
+                        </div>
+                        <p id="account_number_tooltip"></p>
+                        <button id="copy_bank_details">
+                          Copy <i class="bx bx-copy-alt"></i>
+                        </button>
+                      </span>
+                    </div>
+                    <div class="student_policy">
+                      <input type="checkbox" name="student_policy" id="" />
+                      <span
+                        >By clicking on payment sent, you agree to our students
+                        policy</span
+                      >
+                    </div>
+                    <button>Payment Sent</button>
+                  </div>
                 </div>
               </div>
             </div>
