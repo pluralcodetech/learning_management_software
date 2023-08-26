@@ -55,13 +55,20 @@
   --pc-bg: #f5f6fa;
 }
 
-.red {
-  color: #ff0000;
+.selected {
+  background-color: yellow; /* You can adjust the color */
 }
 
 .green {
-  color: #00ff00;
+  background-color: green;
+  color: white;
 }
+
+.red {
+  background-color: red;
+  color: white;
+}
+
 
 .quiz_container {
   position: relative;
