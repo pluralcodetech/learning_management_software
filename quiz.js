@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const quizQuestions = quizData.questions;
 
           const quizContainer = document.getElementById("quiz_container");
+          const quizResult = document.getElementById("quiz_results");
 
           quizQuestions.forEach((question, index) => {
             const questionElement = document.createElement("div");
@@ -124,11 +125,100 @@ document.addEventListener("DOMContentLoaded", async () => {
                 index + 1
               }: ${question.correct_answers.join(", ")}`
             );
+
+            const nextModule = document.getElementById("next_module");
+            const tryAgain = document.getElementById("try_again");
+
+            submitButton.addEventListener("click", () => {
+              quizResult.classList.add("show");
+
+              quizContainer.style.display = "none";
+
+              const scoreElement = document.getElementById("score");
+              const congratsText = document.getElementById("congrats");
+              const failedText = document.getElementById("failed");
+
+              nextModule.style.display = "none";
+              tryAgain.style.display = "none";
+              congratsText.style.display = "none";
+              failedText.style.display = "none";
+
+              let userScore = 0;
+              const totalQuestions = quizQuestions.length;
+
+              quizQuestions.forEach((question, index) => {
+                const storedAnswers = getUserAnswers(quizId);
+                const userAnswerIndex = storedAnswers
+                  ? storedAnswers[index]
+                  : undefined;
+
+                const correctAnswerIndices = question.answers.reduce(
+                  (indices, answer, answerIndex) => {
+                    if (question.correct_answers.includes(answer)) {
+                      indices.push(answerIndex);
+                    }
+                    return indices;
+                  },
+                  []
+                );
+
+                if (
+                  userAnswerIndex !== undefined &&
+                  correctAnswerIndices.includes(userAnswerIndex)
+                ) {
+                  userScore += 1;
+                }
+              });
+
+              const percentageScore = (userScore / totalQuestions) * 100;
+
+              if (percentageScore >= 70) {
+                congratsText.style.display = "block";
+                nextModule.style.display = "block";
+              } else {
+                tryAgain.style.display = "block";
+                failedText.style.display = "block";
+              }
+
+              if (percentageScore < 70) {
+                scoreElement.style.color = "red";
+              }
+
+              scoreElement.textContent = `${Math.floor(percentageScore)}%`;
+            });
+
+            tryAgain.addEventListener("click", (e) => {
+              e.preventDefault();
+            
+              // Hide the results and show the quiz
+              quizResult.classList.remove("show");
+              quizContainer.style.display = "block";
+            
+              // Iterate through user selections and adjust styles
+              question.answers.forEach((answer, answerIndex) => {
+                const answerItem = answersElement.querySelector(`li:nth-child(${answerIndex + 1})`);
+                const storedAnswers = getUserAnswers(quizId);
+                const userAnswerIndex = storedAnswers ? storedAnswers[index] : undefined;
+                const answerLabel = answerItem.querySelector("label");
+            
+                if (userAnswerIndex === answerIndex) {
+                  if (question.correct_answers.includes(answer)) {
+                       answerLabel.classList.add("correct-answer");
+                    answerLabel.classList.remove("incorrect-answer");
+                  } else {
+                      answerLabel.classList.add("incorrect-answer");
+                    answerLabel.classList.remove("correct-answer");
+                  }
+                } else {
+                  answerItem.classList.remove("correct-answer", "incorrect-answer");
+                  answerLabel.classList.remove("correct-text", "incorrect-text");
+                }
+              });
+            });
+            
           });
         }
       }
-
-
     } else {
       // Handle the case when user data or token is not available
     }
@@ -160,4 +250,3 @@ function getUserAnswers(quizId) {
   const storageKey = `userAnswers_${quizId}`;
   return JSON.parse(localStorage.getItem(storageKey));
 }
-

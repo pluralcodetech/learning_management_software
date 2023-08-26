@@ -60,13 +60,12 @@
 }
 
 .correct-answer {
-  background-color: green;
-  color: white;
+  color: green;
+  font-family: var(--font-gilroy-regular);
 }
 
 .incorrect-answer {
-  background-color: red;
-  color: white;
+  color: red;
 }
 
 .quiz_container {
@@ -91,10 +90,9 @@
 }
 
 #quiz_results {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap;
   padding: 35px;
   margin: 25px;
   background-color: var(--pc-bg);
@@ -102,14 +100,34 @@
   box-shadow: 0px 0px 3px var(--pc-light-gray);
 }
 
+.show {
+  display: flex !important;
+}
+
+.quiz_results_details {
+  width: 80%;
+}
+
+.quiz_results_btns {
+  width: max-content;
+}
+
 .quiz_results_details .spans {
+  padding-top: 15px;
   margin-left: 35px;
   font-family: var(--font-gilroy-medium);
+  font-size: var(--big-text);
+}
+
+.quiz_results_details .spans span:last-of-type {
+  font-size: var(--small-text);
+  color: var(--pc-light-gray);
 }
 
 .quiz_results_details .spans #score {
   color: green;
   font-weight: 500;
+  font-size: var(--heading-2);
 }
 
 #quiz_results .quiz_results_text {
@@ -119,12 +137,19 @@
 }
 
 #quiz_results .quiz_results_text h3 {
-  padding-left: 10px;
+  padding: 0;
+}
+
+#quiz_results .quiz_results_text .success_fail_text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #quiz_results .quiz_results_text .bx-check-circle {
   font-size: 35px;
   color: green;
+  margin-right: 8px;
 }
 
 .quiz_action_btn {

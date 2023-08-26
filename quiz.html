@@ -83,29 +83,34 @@
                 ><i class="bx bxs-chevron-left-circle"></i> Go Back</a
               >
             </div>
-            <div class="quiz_container" id="quiz_container">
-              <h3>Assessment: Quiz</h3>
-              <button id="submitQuiz">Submit</button>
+
+            <div class="quiz_container">
               <div id="quiz_results">
                 <div class="quiz_results_details">
                   <div class="quiz_results_text">
-                    <i class="bx bx-check-circle"></i>
-                    <h3>Congratulations ! You Passed</h3>
-                    <h3 style="display: none">
-                      Sorry ! You Didn't Pass The Quiz
-                    </h3>
+                    <div class="success_fail_text">
+                      <i class="bx bx-check-circle"></i>
+                      <h3 id="congrats">Congratulations ! You Passed</h3>
+                      <h3 id="failed">Sorry ! You Didn't Pass The Quiz</h3>
+                    </div>
                   </div>
                   <div class="spans">
-                    <span>Grade Recieved: <span id="score">100%</span></span>
+                    <span>Grade Received: <span id="score">---</span></span>
                     <span>| To pass 70% or higher</span>
                   </div>
                 </div>
                 <div class="quiz_results_btns">
-                  <button class="quiz_action_btn" style="display: none">
+                  <button class="quiz_action_btn" id="next_module">
                     Next Module
                   </button>
-                  <button class="quiz_action_btn">Try Again</button>
+                  <button class="quiz_action_btn" id="try_again">
+                    Try Again
+                  </button>
                 </div>
+              </div>
+              <div id="quiz_container">
+                <h3>Assessment: Quiz</h3>
+                <button id="submitQuiz">Submit</button>
               </div>
             </div>
           </div>
