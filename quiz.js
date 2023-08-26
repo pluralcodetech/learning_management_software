@@ -9,125 +9,103 @@ const moduleId = url.searchParams.get("moduleid");
 const courseId = url.searchParams.get("courseid");
 const quizId = url.searchParams.get("quizid");
 
-// Now you have the module ID, course ID, and quiz ID from the URL
-console.log("Module ID:", moduleId);
-console.log("Course ID:", courseId);
-console.log("Quiz ID:", quizId);
-
 // Retrieve the studyMaterial data from session storage
 const studyMaterialData = sessionStorage.getItem("studyMaterialsData");
+console.log(studyMaterialData);
 
-// Parse the JSON data if needed
+// Parse the study material data
 const parsedStudyMaterial = JSON.parse(studyMaterialData);
 
-// Now you have the studyMaterial data
-console.log("Study Material Data:", parsedStudyMaterial);
+// Access the quiz questions
+const questions =
+  parsedStudyMaterial.finalResult[0].lecture.attachments[0].quiz.questions;
 
-// Assuming parsedStudyMaterial contains studyMaterialsData
-const quizData = parsedStudyMaterial.finalResult[0].lecture.attachments.find(
-  (attachment) => attachment.kind === "quiz"
-);
+// Get the quiz container element by ID
+const quizContainer = document.getElementById("quiz_container");
 
-if (quizData && quizData.quiz) {
-  const quizQuestions = quizData.quiz.questions;
+// Create a string to store the HTML content
+let htmlContent = "";
 
-  // Get a reference to the quiz container in your HTML
-  const quizContainer = document.querySelector(".quiz_container");
-  const submitButton = document.getElementById("submitQuiz");
+// Iterate through the questions
+questions.forEach((question, index) => {
+  // Build the HTML for each question
+  htmlContent += `<div class="quiz_main_question">
+    <p><strong>${index + 1}:</strong> ${question.question}</p>
+    <ul class="answer-options">`;
 
-  // Create an array to keep track of answered questions
-  const answeredQuestions = new Array(quizQuestions.length).fill(false);
-
-  // Function to check if all questions are answered
-  const checkAllQuestionsAnswered = () => {
-    const allAnswered = answeredQuestions.every((answered) => answered);
-    if (allAnswered) {
-      submitButton.classList.remove("clickable");
-      submitButton.style.backgroundColor = "#f8991d";
-      submitButton.style.color = "#f5f6fa";
-    } else {
-      submitButton.classList.add("clickable");
-    }
-  };
-
-  // Loop through the quiz questions and options
-  quizQuestions.forEach((question, questionIndex) => {
-    const questionElement = document.createElement("div");
-    questionElement.classList.add("quiz_main_question");
-
-    const questionText = document.createElement("p");
-    questionText.textContent = question.question;
-    questionElement.appendChild(questionText);
-
-    const optionsList = document.createElement("ul");
-    question.answers.forEach((option, optionIndex) => {
-      const optionItem = document.createElement("li");
-      const radioInput = document.createElement("input");
-      radioInput.type = "radio";
-      radioInput.name = `question_${questionIndex}`;
-      radioInput.value = option;
-      optionItem.appendChild(radioInput);
-
-      const optionLabel = document.createElement("label");
-      optionLabel.textContent = option;
-      optionItem.appendChild(optionLabel);
-
-      // Add event listener to radio input
-      radioInput.addEventListener("change", () => {
-        answeredQuestions[questionIndex] = true;
-        checkAllQuestionsAnswered();
-      });
-
-      // Assuming the rest of your code remains the same
-
-      // Get a reference to the submit button in your HTML
-      const submitButton = document.getElementById("submitQuiz");
-
-      // Add event listener to the submit button
-      submitButton.addEventListener("click", () => {
-        // Compare user's answers with correct answers
-        const results = [];
-        quizQuestions.forEach((question, questionIndex) => {
-          const userAnswerIndex = document.querySelector(
-            `input[name="question_${questionIndex}"]:checked`
-          );
-          if (userAnswerIndex !== null) {
-            const userAnswer = question.answers[userAnswerIndex.value];
-            const correctAnswers = question.correct_answers;
-
-            const isCorrect = correctAnswers.includes(userAnswer);
-            results.push({ question: question.question, isCorrect });
-          }
-        });
-
-        // Display results using a tooltip or other method
-        console.log(results); // For demonstration purposes
-
-        // You can also update the tooltip content dynamically
-        const tooltip = document.createElement("div");
-        tooltip.className = "quiz-results-tooltip";
-        results.forEach((result) => {
-          const resultElement = document.createElement("p");
-          resultElement.textContent =
-            result.question +
-            ": " +
-            (result.isCorrect ? "Correct" : "Incorrect");
-          tooltip.appendChild(resultElement);
-        });
-
-        // Append the tooltip to a suitable location in your HTML
-        document.body.appendChild(tooltip);
-      });
-
-      optionsList.appendChild(optionItem);
-    });
-    questionElement.appendChild(optionsList);
-
-    // Append the question element to the quiz container
-    quizContainer.appendChild(questionElement);
+  // Add answer options to the HTML content
+  question.answers.forEach((answer, ansIndex) => {
+    htmlContent += `<li>
+      <input type="radio" name="question_${index}" value="${ansIndex}">
+      ${String.fromCharCode(97 + ansIndex)}. ${answer}
+    </li>`;
   });
-  // Initially check if all questions are answered
-  checkAllQuestionsAnswered();
-} else {
-  console.error("Quiz data not found in studyMaterialsData.");
+
+  // Close the answer options list
+  htmlContent += "</ul>";
+
+  // Add correct answer(s) to the HTML content
+  htmlContent += `<p><strong>Correct Answer:</strong> ${question.correct_answers.join(
+    ", "
+  )}</p></div>`;
+});
+
+// Set the generated HTML content to the quiz container
+quizContainer.innerHTML = htmlContent;
+
+// Create a Submit Quiz button
+const submitButton = document.createElement("button");
+submitButton.textContent = "Submit Quiz";
+submitButton.id = "submitQuiz";
+
+// Append the button to the quiz container
+quizContainer.appendChild(submitButton);
+
+// Add "clickable" class to the button initially
+submitButton.classList.add("clickable");
+submitButton.style.backgroundColor = "#f8991d";
+submitButton.style.color = "#f5f6fa";
+
+// Function to check if all questions are answered
+function checkAllQuestionsAnswered() {
+  const radioGroups = document.querySelectorAll(".answer-options");
+  for (let i = 0; i < radioGroups.length; i++) {
+    const selectedRadio = radioGroups[i].querySelector(
+      'input[type="radio"]:checked'
+    );
+    if (!selectedRadio) {
+      return false; // Return false if any question is not answered
+    }
+  }
+  return true; // All questions are answered
 }
+
+// Function to toggle "clickable" class on the button
+function toggleClickableClass() {
+  if (checkAllQuestionsAnswered()) {
+    submitButton.classList.remove("clickable");
+  } else {
+    submitButton.classList.add("clickable");
+  }
+}
+
+// Function to update local storage with user selections
+function updateLocalStorage() {
+  const selections = {};
+  radioButtons.forEach((radio) => {
+    if (radio.checked) {
+      const questionIndex = parseInt(radio.name.split("_")[1]);
+      selections[questionIndex] = parseInt(radio.value);
+    }
+  });
+  localStorage.setItem("userSelections", JSON.stringify(selections));
+}
+
+// Add change event listeners to all radio buttons
+const radioButtons = document.querySelectorAll('input[type="radio"]');
+radioButtons.forEach((radio) => {
+  radio.addEventListener("change", toggleClickableClass);
+});
+
+// Initial check of all questions answered
+toggleClickableClass();

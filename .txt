@@ -1,32 +1,29 @@
-  verifyButton.addEventListener("click", async (event) => {
-    event.preventDefault();
 
-    const enteredOTP = codeInputs.map((input) => input.value).join("");
-
-    const apiUrl = `https://backend.pluralcode.institute/student/otp?otp=${enteredOTP}&hashcode=${hashnode}&email=${userEmail}&type=validate`;
-    const requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-
-    try {
-      const response = await fetch(apiUrl, requestOptions);
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log("API Response:", result);
-        alert(
-          "OTP verification successful. Redirecting to password reset page..."
-        );
-
-        window.location.href = "./reset_password.html";
-      } else {
-        console.error("API Error:", result.message);
-        alert("OTP verification failed. Please check the code and try again.");
-        updateInputBorders(false); // Update OTP input borders to red
-      }
-    } catch (error) {
-      console.error("Fetch Error:", error);
-      alert("An error occurred while verifying the OTP.");
+    // Next module button logic
+    const nextModuleButton = tooltip.querySelector("#nextModule");
+    if (nextModuleButton) {
+      nextModuleButton.addEventListener("click", () => {
+        // Logic to move to the next module
+      });
     }
-  });
+
+    // Try again button logic
+    const tryAgainButton = tooltip.querySelector("#tryAgain");
+    if (tryAgainButton) {
+      tryAgainButton.addEventListener("click", () => {
+        quizContainer.innerHTML = "";
+        quizQuestions.forEach((question, questionIndex) => {
+          const userAnswerIndex = userSelections[questionIndex];
+          const questionElement = createQuestionElement(
+            question,
+            questionIndex,
+            userAnswerIndex
+          );
+          quizContainer.appendChild(questionElement);
+        });
+        quizContainer.appendChild(submitButton);
+        if (quizContainer.contains(tooltip)) {
+          quizContainer.removeChild(tooltip);
+        }
+      });
+    }
