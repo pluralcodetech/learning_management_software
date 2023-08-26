@@ -36,5 +36,4 @@ The following tools were used in this project:
 - [Vanilla JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [Boxicons](https://boxicons.com/)
 
-[DEMO](https://lmstest.netlify.app/) <br><br>
 <a href="#top">Back to top</a>

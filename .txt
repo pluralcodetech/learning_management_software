@@ -1,0 +1,32 @@
+  verifyButton.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const enteredOTP = codeInputs.map((input) => input.value).join("");
+
+    const apiUrl = `https://backend.pluralcode.institute/student/otp?otp=${enteredOTP}&hashcode=${hashnode}&email=${userEmail}&type=validate`;
+    const requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(apiUrl, requestOptions);
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("API Response:", result);
+        alert(
+          "OTP verification successful. Redirecting to password reset page..."
+        );
+
+        window.location.href = "./reset_password.html";
+      } else {
+        console.error("API Error:", result.message);
+        alert("OTP verification failed. Please check the code and try again.");
+        updateInputBorders(false); // Update OTP input borders to red
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      alert("An error occurred while verifying the OTP.");
+    }
+  });

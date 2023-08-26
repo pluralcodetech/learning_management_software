@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <title>Student Dashboard</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <script src="./protected-routes.js"></script>
+  </head>
+  <body class="my_course">
+    <main>
+      <section id="nav_list">
+        <div class="logo">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
+        </div>
+        <div>
+          <nav>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./dashboard.html">
+                <i class="bx bxs-dashboard"></i>
+                <span>My Courses</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./profile.html">
+                <i class="bx bx-user"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="#">
+                <i class="bx bx-log-out"></i>
+                <span onclick="clearAppCookies()">Logout</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </section>
+      <section>
+        <div class="dashboard_main">
+          <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+
+            <div class="search">
+              <i class="bx bx-search"></i>
+              <input type="search" name="" id="" placeholder="Search" />
+            </div>
+            <div class="profile_nav">
+              <i class="bx bxs-message-alt-detail"></i>
+              <div class="notif">
+                <a href="./notif.html"><i class="bx bxs-bell"></i></a>
+                <span>3</span>
+              </div>
+              <div class="profile_name">
+                <span class="initials"><span>MP</span></span>
+                <div class="user_details_container">
+                  <div class="user_details">
+                    <span class="user_name">Mabel Praise</span>
+                    <span class="student_id">Student ID: COH3456</span>
+                  </div>
+                  <i class="bx bx-chevron-down" id="toggle_profile"></i>
+                </div>
+              </div>
+              <div class="toggle_profile_container">
+                <div class="toggle-item">
+                  <i class="bx bx-user"></i>
+                  <a href="#"> Profile </a>
+                </div>
+                <div class="toggle-item">
+                  <i class="bx bx-log-out"></i>
+                  <a href="#"> Logout </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard_body">
+            <div class="community__">
+              <a href="./my-courses.html">&larr; Go Back</a>
+            </div>
+            <div class="pdf_reader">
+              <h3>Introduction to User Experience Design</h3>
+              <div class="pdf__">
+                <div class="pdf_header_btns">
+                  <i class="bx bx-plus"></i><i class="bx bx-minus"></i>
+                </div>
+                <div class="pdf_body">
+                  <iframe
+                    src="https://drive.google.com/file/d/1Nq80u7KEf3J0IbFBo9C-dCpDdPonsR05/preview"
+                    width="100%"
+                    scrolling="no"
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./my-courses.js"></script>
+    <script src="./menu-toggle.js"></script>
+    <script src="./protected-routes.js"></script>
+  </body>
+</html>

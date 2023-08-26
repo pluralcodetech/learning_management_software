@@ -14,19 +14,21 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./dashboard.css" />
+    <link rel="stylesheet" href="./profile.css" />
+    <script src="./protected-routes.js"></script>
   </head>
-  <body>
+  <body class="profile">
     <main>
-      <section>
+      <section id="nav_list">
         <div class="logo">
-          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device"/>
-          <img src="./assets/sm_device.png" alt="" class="sm_device">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
         </div>
         <div>
           <nav>
             <div class="nav-item">
               <div class="nav_item_line"></div>
-              <a href="./index.html">
+              <a href="./dashboard.html">
                 <i class="bx bxs-dashboard"></i>
                 <span>My Courses</span>
               </a>
@@ -38,7 +40,7 @@
                 <span>Profile</span>
               </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" onclick="logoutUser()">
               <div class="nav_item_line"></div>
               <a href="#">
                 <i class="bx bx-log-out"></i>
@@ -51,24 +53,32 @@
       <section>
         <div class="dashboard_main">
           <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+
             <div class="search">
               <i class="bx bx-search"></i>
               <input type="search" name="" id="" placeholder="Search" />
             </div>
             <div class="profile_nav">
-              <i class="bx bxs-message-alt-detail"></i>
-              <div class="notif">
-                <i class="bx bxs-bell"></i>
-                <span>3</span>
-              </div>
               <div class="profile_name">
                 <span class="initials"><span>MP</span></span>
                 <div class="user_details_container">
                   <div class="user_details">
-                    <span class="user_name">Mabel Praise</span>
-                    <span class="student_id">Student ID: COH3456</span>
+                    <span class="user_name">Loading</span>
+                    <span class="student_id">Student ID: Loading</span>
                   </div>
-                  <i class="bx bx-chevron-down" id="toggle_profile"></i>
                 </div>
               </div>
               <div class="toggle_profile_container">
@@ -83,63 +93,216 @@
               </div>
             </div>
           </div>
-          <div class="dashboard_body">
-            <div class="cards">
-              <div class="card">
-                <i class="bx bxs-wallet"></i>
-                <div>
-                  <h3>My Balance</h3>
-                  <p>Outstanding Balance: <span>N60,000</span></p>
+          <div class="profile__holder">
+            <div class="profile__">
+              <div class="profile_container">
+                <div class="profile_header">
+                  <h3>My Profile</h3>
+                  <p>Kindly click on any of the fields to edit</p>
                 </div>
-              </div>
-              <div class="card">
-                <i class="bx bx-book-content"></i>
-                <div>
-                  <h3>My Courses</h3>
-                  <p>2 Register Course</p>
+                <div class="profile_form_container">
+                  <span>Personal Information</span>
+                  <form class="profile_form">
+                    <!-- // Personal Info -->
+                    <div class="personal_information">
+                      <p>
+                        <label for="full-name">Full Name</label>
+                        <input
+                          type="text"
+                          name="full-name"
+                          placeholder="Your Full Name"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="student-id">Student ID</label>
+                        <input
+                          name="student-id"
+                          type="text"
+                          placeholder="PLC/2023/3456"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="phone-number">Phone Number</label>
+                        <input
+                          type="text"
+                          name="phone-number"
+                          placeholder="Your Phone Number"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="email">Email*</label>
+                        <input
+                          type="email"
+                          placeholder="mabelpraiseo@gmail.com"
+                          name="email"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="state">State</label>
+                        <input
+                          type="text"
+                          placeholder="Enter State"
+                          name="state"
+                          disabled
+                        />
+                      </p>
+                      <div style="margin-top: 17px">
+                        <label for="password">Password*</label>
+                        <div class="password_point">
+                          <input
+                            name="password"
+                            type="password"
+                            placeholder="Your Password"
+                            disabled
+                          />
+                          <button
+                            type="button"
+                            id="edit-password-button"
+                            style="margin-top: 0; height: 48px"
+                          >
+                            Edit password
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Password change modal -->
+                    <!-- Modal HTML -->
+                    <div class="edit_passport_modal" id="password-modal">
+                      <div class="modal-content">
+                        <form id="password-form">
+                          <label for="old-password">Old Password</label>
+                          <input
+                            type="password"
+                            id="old-password"
+                            name="old-password"
+                          />
+
+                          <label for="new-password">New Password</label>
+                          <input
+                            type="password"
+                            id="new-password"
+                            name="new-password"
+                          />
+
+                          <label for="confirm-password"
+                            >Confirm New Password</label
+                          >
+                          <input
+                            type="password"
+                            id="confirm-password"
+                            name="confirm-password"
+                          />
+
+                          <div class="edit_password_btns">
+                            <button type="button" id="cancel-button">
+                              Cancel
+                            </button>
+                            <button type="submit" id="update-button">
+                              Save
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                    <!-- // Emergency Info -->
+                    <div class="emergency_information" style="margin-top: 10px">
+                      <span>Reference Information I</span>
+                      <div class="Reference_information_holder_1">
+                        <div>
+                          <label for="reference-name">Reference Name</label>
+                          <input
+                            type="text"
+                            placeholder="Enter reference contact name"
+                            name="refname1"
+                          />
+                        </div>
+                        <div>
+                          <label for="reference">Reference Phone Number</label>
+                          <input
+                            type="text"
+                            placeholder="Enter your refernece phone number"
+                            name="refphone1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!-- // Reference Info -->
+                    <div class="Reference_information">
+                      <span>Reference Information II</span>
+                      <div class="Reference_information_holder">
+                        <div style="margin-top: 17px">
+                          <label for="reference-name">Reference Name</label>
+                          <input
+                            style="margin-top: 10px"
+                            type="text"
+                            placeholder="Enter reference name"
+                            name="refname2"
+                          />
+                        </div>
+                        <div style="margin-top: 17px">
+                          <label for="emergency-phone-number"
+                            >Reference Phone Number</label
+                          >
+                          <input
+                            style="margin-top: 10px"
+                            type="text"
+                            placeholder="Enter your reference phone number"
+                            name="refphone2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!-- // Id Info -->
+                    <div class="Id_information">
+                      <span>ID Information</span>
+                      <div class="Id_information_holder">
+                        <div
+                          style="margin-top: 17px"
+                          class="Id_information_select"
+                        >
+                          <label for="id-type">Select ID Type</label>
+                          <select name="id-type" id="">
+                            <option value="" disabled selected hidden></option>
+                            <option value="national_id">National ID</option>
+                            <option value="nin_slip">NIN Slip</option>
+                            <option value="driver_license">
+                              Driver License
+                            </option>
+                            <option value="passport">Passport</option>
+                          </select>
+                        </div>
+                        <div style="margin-top: 17px">
+                          <label for="upload_file">Upload ID</label>
+                          <input
+                            type="file"
+                            name="upload_file"
+                            id="id_image"
+                            style="margin-top: 11px; border: none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <button id="save_btn">Save</button>
+                  </form>
                 </div>
               </div>
             </div>
-            <div class="filter_buttons">
-              <div>
-                <button>My Courses</button>
-                <div class="line"></div>
-              </div>
-              <div>
-                <button>Certificates</button>
-                <div class="line"></div>
-              </div>
-            </div>
-            <div class="course_cards">
-              <div class="course_card">
-                <img src="./assets/prodcut.png" alt="" />
-                <div>
-                  <span>Product Design</span>
-                  <p>
-                    Learn Ui/Ux from scratch without writing a single code.
-                    Master how to design high fidelity interface with FIGMA,
-                    design journey mapping and empathize with users.
-                  </p>
-                </div>
-                <button>Course Details <span>&rarr;</span></button>
-              </div>
-              <div class="course_card">
-                <img src="./assets/mgt.png" alt="" />
-                <div>
-                  <span>Product Management</span>
-                  <p>
-                    Become a professional product manager in 8 weeks. Learn how
-                    to gather users data, identify their needs and how it
-                    benefits them.
-                  </p>
-                </div>
-                <button>Course Details <span>&rarr;</span></button>
+            <div class="modal" id="response-modal">
+              <div class="modal-content">
+                <p id="modal-message"></p>
               </div>
             </div>
           </div>
         </div>
       </section>
     </main>
-    <script src="./dashboard.js"></script>
+    <script src="./profile.js"></script>
+    <script src="./menu-toggle.js"></script>
+    <script src="./protected-routes.js"></script>
   </body>
 </html>

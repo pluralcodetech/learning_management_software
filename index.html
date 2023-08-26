@@ -3,134 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./Login.css" />
     <link
       rel="shortcut icon"
       href="./assets/favicon-32x32.png"
       type="image/x-icon"
     />
-    <title>Student Dashboard</title>
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./dashboard.css" />
+    <title>Student Dashboard - Login</title>
   </head>
   <body>
     <main>
-      <section>
-        <div class="logo">
-          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device"/>
-          <img src="./assets/sm_device.png" alt="" class="sm_device">
+      <section class="Login__Form">
+        <!-- Details CTA -->
+        <div class="CTA">
+          <h1>Welcome Back!</h1>
+          <p>Login to your PluralCode account</p>
         </div>
-        <div>
-          <nav>
-            <div class="nav-item">
-              <div class="nav_item_line"></div>
-              <a href="./index.html">
-                <i class="bx bxs-dashboard"></i>
-                <span>My Courses</span>
-              </a>
-            </div>
-            <div class="nav-item">
-              <div class="nav_item_line"></div>
-              <a href="./profile.html">
-                <i class="bx bx-user"></i>
-                <span>Profile</span>
-              </a>
-            </div>
-            <div class="nav-item">
-              <div class="nav_item_line"></div>
-              <a href="#">
-                <i class="bx bx-log-out"></i>
-                <span>Logout</span>
-              </a>
-            </div>
-          </nav>
-        </div>
+        <!-- Form -->
+        <form id="login-form">
+          <!-- Email Input -->
+          <div class="Email__Form">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="Enter Email"
+              class="input"
+            />
+          </div>
+          <!-- Password Input -->
+          <div class="Password__Form">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              required
+              class="input"
+              placeholder="Enter Password"
+            />
+          </div>
+          <!-- //Remember me -->
+          <div class="Remember__Me">
+
+            <a href="./email_password_reset.html">Forgot Password</a>
+          </div>
+          <!-- //Button -->
+          <div><button class="btn" type="submit">Login</button></div>
+          <!-- <div class="navigate">
+            Don’t have an account? <span><a href="">Create an Account</a></span>
+          </div> -->
+        </form>
       </section>
-      <section>
-        <div class="dashboard_main">
-          <div class="header">
-            <div class="search">
-              <i class="bx bx-search"></i>
-              <input type="search" name="" id="" placeholder="Search" />
-            </div>
-            <div class="profile_nav">
-              <i class="bx bxs-message-alt-detail"></i>
-              <div class="notif">
-                <i class="bx bxs-bell"></i>
-                <span>3</span>
-              </div>
-              <div class="profile_name">
-                <span class="initials"><span>MP</span></span>
-                <div class="user_details_container">
-                  <div class="user_details">
-                    <span class="user_name">Mabel Praise</span>
-                    <span class="student_id">Student ID: COH3456</span>
-                  </div>
-                  <i class="bx bx-chevron-down" id="toggle_profile"></i>
-                </div>
-              </div>
-              <div class="toggle_profile_container">
-                <div class="toggle-item">
-                  <i class="bx bx-user"></i>
-                  <a href="#"> Profile </a>
-                </div>
-                <div class="toggle-item">
-                  <i class="bx bx-log-out"></i>
-                  <a href="#"> Logout </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="dashboard_body">
-            <div class="cards">
-              <div class="card">
-                <i class="bx bxs-wallet"></i>
-                <div>
-                  <h3>My Balance</h3>
-                  <p>Outstanding Balance: <span>N60,000</span></p>
-                </div>
-              </div>
-              <div class="card">
-                <i class="bx bx-book-content"></i>
-                <div>
-                  <h3>My Courses</h3>
-                  <p>2 Registered Courses</p>
-                </div>
-              </div>
-            </div>
-            <div class="filter_buttons">
-              <div>
-                <button id="my_courses_button">My Courses</button>
-                <div class="line"></div>
-              </div>
-              <div>
-                <button id="certificates_button">Certificates</button>
-                <div class="line"></div>
-              </div>
-            </div>
-            <div class="course_cards" id="course_cards"></div>
-            <!-- // certificate pop-up modal -->
-            <div class="view_certificate_modal" id="certificate_modal">
-              <div class="view_certificate_modal_container">
-                <i class="bx bx-x" id="close_cert"></i>
-                <div class="view_certificate_modal_details">
-                  <img src="./assets/certificate_modal.png" alt="" />
-                  <span>Completed by Mabel Okeke</span>
-                  <small>August 25, 2023</small>
-                  <p>
-                    PluralCode certifies their successful completion of Product
-                    Design Course
-                  </p>
-                  <button><i class="bx bx-download"></i>Download</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <section class="Login__Image">
+        <img src="../assets/signinPage.png" alt="Sign In" />
       </section>
     </main>
-    <script src="./dashboard.js"></script>
+    <script src="./Login.js"></script>
   </body>
 </html>

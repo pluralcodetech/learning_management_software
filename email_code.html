@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./auth.css" />
+  </head>
+  <body class="email_verification">
+    <div class="container">
+      <div>
+        <h1>Enter Verification Code</h1>
+        <p>
+          Please enter the four digit number that was sent to
+          <span id="userEmail">exam******@*****.com</span>
+        </p>
+      </div>
+      <form>
+        <div class="inputs">
+          <input class="code-input" type="text" name="" placeholder="0" id="" />
+          <input class="code-input" type="text" name="" placeholder="0" id="" />
+          <input class="code-input" type="text" name="" placeholder="0" id="" />
+          <input class="code-input" type="text" name="" placeholder="0" id="" />
+        </div>
+        <div class="countdown">
+          <span id="countdownSpan">05:00</span>
+          <span id="resendButton">Resend</span>
+        </div>
+        <button id="verifyButton">Continue</button>
+      </form>
+    </div>
+
+    <script src="./email_code.js"></script>
+  </body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <title>Study Page</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js"></script>
+    <!-- PDF VIEWER -->
+    <script src="./PDFJSExpress/lib/webviewer.min.js"></script>
+    <script src="./protected-routes.js"></script>
+  </head>
+  <body class="my_course">
+    <main>
+      <section id="nav_list">
+        <div class="logo">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
+        </div>
+        <div>
+          <nav>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./dashboard.html">
+                <i class="bx bxs-dashboard"></i>
+                <span>My Courses</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./profile.html">
+                <i class="bx bx-user"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="#" onclick="logoutUser()">
+                <i class="bx bx-log-out"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </section>
+      <section>
+        <div class="dashboard_main">
+          <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+
+            <div class="profile_nav">
+              <div class="profile_name">
+                <span class="initials"><span>..</span></span>
+                <div class="user_details_container">
+                  <div class="user_details">
+                    <span class="user_name">Loading</span>
+                    <span class="student_id">Student ID: Loading</span>
+                  </div>
+                </div>
+              </div>
+              <div class="toggle_profile_container">
+                <div class="toggle-item">
+                  <i class="bx bx-user"></i>
+                  <a href="#"> Profile </a>
+                </div>
+                <div class="toggle-item">
+                  <i class="bx bx-log-out"></i>
+                  <a href="#"> Logout </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard_body">
+            <div class="community__">
+              <a href="./my-courses.html"
+                ><i class="bx bxs-chevron-left-circle"></i> Go Back</a
+              >
+            </div>
+            <div class="dashboard_video_content">
+              <div class="video_player_container">
+                <div class="main_player">
+                  <div class="video_player_header">
+                    <h3 id="moduleMilestoneName">Loading...</h3>
+                  </div>
+                  <div class="video_player_vd">
+                    <div id="tooltip" class="tooltip">
+                      Click on the milestone to begin
+                    </div>
+                    <video id="videoPlayer" class="video" controls>
+                      <source src="" type="video/mp4" />
+                      <source src="" type="video/webm" />
+                      <p>Your browser doesn't support HTML5 video.</p>
+                    </video>
+                    <div style="text-align: center" id="pdf_container">
+                      <object
+                        data="https://cdn.fs.teachablecdn.com/yUi2J9MuSbangiebvibp"
+                        type="application/pdf"
+                        width="700"
+                        height="678"
+                      >
+                        <iframe
+                          src="https://cdn.fs.teachablecdn.com/yUi2J9MuSbangiebvibp"
+                          width="500"
+                          height="678"
+                        >
+                        </iframe>
+                      </object>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="milestones">
+                <div class="milestones_container">
+                  <div class="milestone_header">
+                    <h3></h3>
+                    <span class="module_number"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      WebViewer(
+        {
+          path: "/lib", // path to the PDF.js Express'lib' folder on your server
+          licenseKey: "Insert free license key here",
+          initialDoc:
+            "https://pdftron.s3.amazonaws.com/downloads/pl/webviewer-demo.pdf",
+          // initialDoc: '/path/to/my/file.pdf',  // You can also use documents on your server
+        },
+        document.getElementById("viewer")
+      ).then((instance) => {
+        // now you can access APIs through the WebViewer instance
+        const { Core, UI } = instance;
+
+        // adding an event listener for when a document is loaded
+        Core.documentViewer.addEventListener("documentLoaded", () => {
+          console.log("document loaded");
+        });
+
+        // adding an event listener for when the page number has changed
+        Core.documentViewer.addEventListener(
+          "pageNumberUpdated",
+          (pageNumber) => {
+            console.log(`Page number is: ${pageNumber}`);
+          }
+        );
+      });
+    </script>
+    <script src="./video.js"></script>
+    <script src="./menu-toggle.js"></script>
+  </body>
+</html>

@@ -22,7 +22,6 @@
   font-family: "Gilroy_Black";
   src: url(../assets/fonts/Gilroy-Black.ttf);
 }
-
 :root {
   /* //font family */
   --font-gilroy-thin: "Gilroy_Thin", sans-serif;
@@ -51,7 +50,7 @@
 body {
   padding: 0;
   margin: 0;
-  overflow-y: hidden;
+  overflow-y: auto;
   background-color: var(--pc-bg);
 }
 a {
@@ -70,6 +69,7 @@ a {
   width: 100%;
   padding: 15px 18px;
   border-radius: 5px;
+  cursor: pointer;
 }
 .input {
   width: 100%;
@@ -82,12 +82,12 @@ body main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4rem;
+  gap: 2.5rem;
 }
 main .Login__Form {
   background-color: var(--pc-white-white);
   height: 100vh;
-  width: 45%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,6 +136,13 @@ form .Password__Form {
 .Password__Form label {
   margin-top: 22px;
 }
+
+.Email__Form input,
+.Password__Form input {
+  font-family: var(--font-gilroy-regular);
+  font-size: var(--normal-text);
+}
+
 .Email__Form input::placeholder,
 .Password__Form input::placeholder {
   font-family: var(--font-gilroy-regular);
@@ -144,8 +151,9 @@ form .Password__Form {
 .Remember__Me {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 50px;
+  justify-content: end;
+
 }
 .Remember__Me a {
   font-size: var(--small-text);
@@ -171,7 +179,6 @@ form .Password__Form {
   color: var(--pc-orange);
 }
 main .Login__Image {
-  position: relative;
   background-color: var(--pc-white-white);
   height: 100vh;
   width: 55%;
@@ -184,9 +191,55 @@ main .Login__Image img {
   height: auto;
   z-index: 3;
 }
-
 .Login__Image .Ribbon {
   z-index: 1;
   position: absolute;
   border: 1px solid #00f;
+}
+
+/* Media Queries */
+@media (max-width: 767px) {
+  body {
+    height: 100%;
+    overflow-y: scroll;
+  }
+  body main {
+    flex-direction: column;
+    width: 100%;
+    height: max-content;
+    overflow-y: auto;
+    gap: 1.5rem;
+  }
+  main .Login__Form {
+    background-color: var(--pc-white-white);
+    height: max-content;
+    width: 100%;
+    padding: 1.5rem;
+  }
+  .Login__Form .CTA {
+    width: 100%;
+    justify-content: center;
+  }
+  main .Login__Image {
+    background-color: var(--pc-white-white);
+    height: max-content;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media (min-width: 768px) and (max-width: 1030px) {
+  body main {
+    flex-direction: column;
+    height: 100%;
+  }
+  main .Login__Form {
+    height: 100%;
+    width: 100%;
+  }
+  main .Login__Image {
+    height: 100%;
+    width: 100%;
+  }
 }

@@ -1,122 +1,292 @@
-//Nav item toggle logic
-document.addEventListener("DOMContentLoaded", () => {
-  const navItems = document.querySelectorAll(".nav-item");
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const userDataString = getCookie("userData");
+    const userToken = getCookie("userToken");
 
-  function setActiveNavItem() {
-    const currentPage = window.location.pathname.split("/").pop();
-    navItems.forEach((navItem) => {
-      const href = navItem
-        .querySelector("a")
-        .getAttribute("href")
-        .split("/")
-        .pop();
-      if (currentPage === href) {
-        navItem.classList.add("active");
-      } else {
-        navItem.classList.remove("active");
+    if (userDataString && userToken) {
+      const userData = JSON.parse(userDataString);
+
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        "https://backend.pluralcode.institute/student/dashboard-api",
+        requestOptions
+      );
+      const result = await response.json();
+      console.log("API Result:", result);
+
+      const expirationDate = new Date();
+      expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+      document.cookie = `apiData=${JSON.stringify(
+        result
+      )}; expires=${expirationDate.toUTCString()}; path=/; SameSite=None; Secure`;
+
+      console.log("User Data:", userData);
+      console.log("User Token:", userToken);
+
+      const profileNameElement = document.querySelector(".user_name");
+      const studentIdElement = document.querySelector(".student_id");
+      const initialsElement = document.querySelector(".initials span");
+
+      profileNameElement.textContent = result.user.name;
+      studentIdElement.textContent = `Student ID: ${result.user.id}`;
+
+      if (result.user.name) {
+        const firstName = result.user.name.split(" ")[0];
+        const firstInitial = firstName.charAt(0).toUpperCase();
+        initialsElement.textContent = firstInitial;
       }
-    });
-  }
 
-  setActiveNavItem();
+      const urlParams = new URLSearchParams(window.location.search);
+      const courseId = urlParams.get("courseid");
 
-  navItems.forEach((navItem) => {
-    navItem.addEventListener("click", () => {
-      navItems.forEach((item) => item.classList.remove("active"));
+      const targetCourse = result.enrolledcourses.find(
+        (course) => course.id === parseInt(courseId)
+      );
 
-      navItem.classList.add("active");
+      const modulesContainer = document.querySelector(".module_containers");
 
-      localStorage.setItem("lastClickedItemIndex", index);
-    });
-  });
-});
+      // Get the elements
+      const showMoreButton = document.getElementById("seeMore");
+      const hiddenText = document.getElementById("hiddenText");
 
-// JavaScript to handle filter button clicks and div visibility
-const buttons = document.querySelectorAll(".course_page_filters button");
-const divs = document.querySelectorAll(".course_page_cards > div");
-const buttonsToHide = document.querySelectorAll(
-  ".hide_community_button, .hide_search_bar"
-);
+      // Initialize the state of the hidden content
+      let isHidden = true;
 
-buttons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const target = button.getAttribute("data-filter");
+      // Add click event listener to the "Show More" button
+      showMoreButton.addEventListener("click", () => {
+        isHidden = !isHidden; // Toggle the state
 
-    buttons.forEach((btn) => {
-      if (btn === button) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    });
+        // Toggle the display of the hidden text
+        hiddenText.style.display = isHidden ? "none" : "block";
 
-    divs.forEach((div) => {
-      if (div.classList.contains(target)) {
-        div.style.display = "block";
-      } else {
-        div.style.display = "none";
-      }
-    });
-
-    // Hide specific buttons when the "Payment Status" filter is clicked
-    if (target === "payment") {
-      buttonsToHide.forEach((btn) => {
-        btn.style.display = "none";
+        // Change the text of the "Show More" button
+        showMoreButton.textContent = isHidden ? "Show More" : "Show Less";
       });
+
+      // Hide the capstone_project div initially
+      const capstoneProjectDiv = document.getElementById("hide_capstone");
+      const capstones__ = document.getElementById("capstones__");
+      // capstoneProjectDiv.style.display = "none";
+
+      // Delay for about 10 seconds (10000 milliseconds)
+      setTimeout(() => {
+        // Show the capstone_project div only if the enrollment source is "loop_form"
+        if (
+          targetCourse &&
+          targetCourse.enrollment_source === "loop_form" &&
+          !paymentFilterButton.classList.contains("active")
+        ) {
+          capstoneProjectDiv.style.display = "block";
+          capstones__.style.display = "block";
+        }
+      }, 5000);
+
+      // Get the filter buttons
+      const moduleFilterButton = document.querySelector(
+        '[data-filter="modules"]'
+      );
+      const paymentFilterButton = document.querySelector(
+        '[data-filter="payment"]'
+      );
+
+      // Check if the target course exists and its enrollment_source is "loop_form"
+      if (targetCourse && targetCourse.enrollment_source === "loop_form") {
+        paymentFilterButton.style.display = "none"; // Hide the "Payment Status" filter button
+      }
+
+      const paymentContainer = document.querySelector(".payment_container");
+
+      const outstandingPaymentElement =
+        paymentContainer.querySelector("p span");
+
+      if (targetCourse && targetCourse.enrollment_source === "admission_form") {
+        const outstandingPayment = targetCourse.balance;
+
+        outstandingPaymentElement.textContent = `N${outstandingPayment}`;
+
+        // You can set other dynamic content here as well
+      }
+      // Get the module containers and payment div
+      const moduleContainers = document.querySelector(".module_containers");
+      const paymentDiv = document.querySelector(".payment");
+
+      // Add click event listeners to the filter buttons
+      moduleFilterButton.addEventListener("click", () => {
+        moduleContainers.style.display = "block";
+        paymentDiv.style.display = "none";
+        capstoneProjectDiv.style.display = "block";
+        moduleFilterButton.classList.add("active");
+        paymentFilterButton.classList.remove("active");
+      });
+
+      paymentFilterButton.addEventListener("click", () => {
+        moduleContainers.style.display = "none";
+        paymentDiv.style.display = "block";
+        capstoneProjectDiv.style.display = "none";
+        paymentFilterButton.classList.add("active");
+        moduleFilterButton.classList.remove("active");
+      });
+
+      if (targetCourse) {
+        for (const [index, module] of targetCourse.course_module.entries()) {
+          const numContents = module.lectures.length;
+          const moduleCard = document.createElement("div");
+          moduleCard.classList.add("module_card");
+
+          // Check if the module is locked or unlocked
+          const isUnlocked = module.unlockedstatus === true;
+
+          if (!isUnlocked) {
+            moduleCard.classList.add("locked"); // Add a class to style locked modules
+          }
+
+          moduleCard.innerHTML = `
+              <div class="module_container">
+                <div class="module_details">
+                   <img class="module_image" src="${
+                     targetCourse.course_image_url
+                   }" alt="Course Image">
+                    <div class="module_details_text">
+                        <h4 class="module_title">Course | ${
+                          targetCourse.course_name
+                        }</h4>
+                        <h3 class="module_course_title">Module ${index + 1} - ${
+            module.name
+          }</h3>
+                        <h5><i class='bx bx-book-content'></i> ${numContents} content${
+            numContents !== 1 ? "s" : ""
+          }</h5>
+                    </div>
+                </div>
+                <div class="module_nextup">
+                    <span>Next up</span>
+                    <h3>${module.lectures[0].name}</h3>
+                    <div>
+                      Module ${index + 1} | ${numContents} content${
+            numContents !== 1 ? "s" : ""
+          }
+                    </div>
+      <button onclick="redirectToVideoCourse('${courseId}', '${
+            module.id
+          }')">Continue Module</button>
+                </div>
+              </div>
+            `;
+
+          try {
+            const studyMaterialsData = await fetchStudyMaterialsData(
+              targetCourse.teachable_course_id,
+              module.lectures,
+              userData // Pass the userData object
+            );
+
+            // Store studyMaterialsData in session storage
+            sessionStorage.setItem(
+              "studyMaterialsData",
+              JSON.stringify(studyMaterialsData)
+            );
+
+            console.log("Study Materials Data:", studyMaterialsData);
+
+            // Check if lecture data is available
+            if (
+              studyMaterialsData &&
+              studyMaterialsData.finalResult.length > 0
+            ) {
+              const firstLectureName =
+                studyMaterialsData.finalResult[0].lecture.name;
+              const lectureNameElement =
+                moduleCard.querySelector(".module_nextup h3");
+              lectureNameElement.textContent = firstLectureName;
+            }
+
+            modulesContainer.appendChild(moduleCard);
+          } catch (error) {
+            console.error(
+              "An error occurred while fetching study materials:",
+              error
+            );
+          }
+        }
+      }
     } else {
-      buttonsToHide.forEach((btn) => {
-        btn.style.display = "inline-block"; // or "block" depending on your buttons' display style
-      });
+      console.log("User data or token not found in cookies.");
     }
-  });
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
 });
 
-// Set the initial active state for the "Course Modules" button and div
-const initialActiveButton = document.querySelector(
-  ".course_page_filters button.active"
-);
-const initialTarget = initialActiveButton.getAttribute("data-filter");
-const initialActiveDiv = document.querySelector(`.${initialTarget}`);
-if (initialActiveDiv) {
-  initialActiveDiv.style.display = "block";
+async function fetchStudyMaterialsData(teachableCourseId, lectures, userData) {
+  const lectureIds = lectures.map((lecture) => lecture.id);
+
+  const requestBody = {
+    course_id: teachableCourseId,
+    lectures: lectureIds.map((lectureId) => ({ id: lectureId })),
+  };
+
+  const userToken = getCookie("userToken");
+
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${userToken}`, // Include the bearer token
+    },
+    body: JSON.stringify(requestBody),
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      "https://backend.pluralcode.institute/student/study-materials",
+      requestOptions
+    );
+    const responseData = await response.json();
+    return responseData; // Return the entire study materials data
+  } catch (error) {
+    console.error("Error fetching study materials data:", error);
+    throw error;
+  }
 }
 
-// copy bank details
-const copy_bank_details = document.getElementById("copy_bank_details");
-
-copy_bank_details.addEventListener("click", copyDetails);
-
-function copyDetails() {
-  let account_number_input = document.getElementById("account_number");
-  let account_number_tooltip = document.getElementById(
-    "account_number_tooltip"
-  );
-
-  account_number_input.select();
-  document.execCommand("copy");
-
-  account_number_tooltip.innerHTML = "Account Number Copied";
-
-  // Show the tooltip
-  account_number_tooltip.style.display = "flex";
-
-  // Hide the tooltip after 3 seconds
-  setTimeout(function () {
-    account_number_tooltip.innerHTML = "";
-    account_number_tooltip.style.display = "none";
-  }, 3000);
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
-// Payment section popup
-const showPaymentButton = document.getElementById("show_payment_button");
-const paymentCCSection = document.querySelector(".payment_CC");
+function redirectToVideoCourse(courseId, moduleId) {
+  window.location.href = `video-course.html?courseid=${courseId}&moduleid=${moduleId}`;
+}
 
-showPaymentButton.addEventListener("click", function () {
-  paymentCCSection.style.display = "block";
-});
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
+function logoutUser() {
+  // Clear cookies (if used)
+  clearCookie("userData");
+  clearCookie("userToken");
+  clearCookie("studyMaterialsData");
+  clearCookie("studyMaterialsByModule");
 
-const closePaymentCCButton = document.getElementById("close_payment_CC");
+  sessionStorage.removeItem("userData");
+  sessionStorage.removeItem("userToken");
 
-closePaymentCCButton.addEventListener("click", function () {
-  paymentCCSection.style.display = "none";
-});
+  // Redirect to the login page
+  window.location.href = "./index.html"; // Replace with the actual URL of your login page
+}
+
+// Clear a specific cookie by setting its expiration in the past
+function clearCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
