@@ -134,6 +134,78 @@ document.addEventListener("DOMContentLoaded", async () => {
         moduleFilterButton.classList.remove("active");
       });
 
+      // Get the "Complete Payment" button element
+      const completePaymentButton = document.getElementById(
+        "show_payment_button"
+      );
+      const spinner = document.getElementById("spinner");
+
+      spinner.style.display = "none";
+
+      // Add a click event listener to the "Complete Payment" button
+      completePaymentButton.addEventListener("click", async () => {
+        try {
+          spinner.style.display="inline-block"
+          const userToken = getCookie("userToken");
+          console.log(userToken);
+          const userDataString = getCookie("userData");
+          const userData = JSON.parse(userDataString);
+          console.log(userData);
+
+          const courseName = targetCourse.course_name; // Set the course name
+          const email = userData.email; // Get the user's email from userData
+          const flutterwaveReferenceID = "hooli-tx-1920bbteuutrtty"; // Set the reference ID
+
+          const requestBody = {
+            course_name: courseName,
+            email: email,
+            flutterwave_reference_id: flutterwaveReferenceID,
+          };
+
+          const requestOptions = {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+            redirect: "follow",
+          };
+
+          const response = await fetch(
+            "https://backend.pluralcode.institute/student/balance-payment",
+            requestOptions
+          );
+
+          const result = await response.json();
+          console.log("Payment API Result:", result);
+
+          // Handle the payment completion response here
+          if (result.message === "Payment completed") {
+            // Update UI or perform any actions upon successful payment
+            const successMessage = document.createElement("div");
+            successMessage.textContent = "Payment completed successfully!";
+            successMessage.classList.add("successMessage");
+            paymentContainer.innerHTML = ""; // Clear the existing content
+            paymentContainer.appendChild(successMessage); // Append the success message
+
+            // Remove the success message and restore original content after 10 seconds
+            setTimeout(() => {
+              paymentContainer.innerHTML = originalContent; // Restore original content
+            }, 10000); // 10 seconds
+          } else {
+            // Handle payment error if needed
+            console.log("Payment failed.");
+          }
+        } catch (error) {
+          console.error("Error making payment:", error);
+        } finally {
+        }
+      });
+
+      // Store the original content of the payment container
+      const originalContent = paymentContainer.innerHTML;
+
       if (targetCourse) {
         for (const [index, module] of targetCourse.course_module.entries()) {
           const numContents = module.lectures.length;

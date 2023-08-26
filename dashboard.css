@@ -993,7 +993,7 @@ nav .nav-item {
   background-color: var(--pc-bg);
   margin: auto;
   margin-top: 35px;
-  padding: 45px 60px;
+  padding: 45px 35px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1663,7 +1663,8 @@ nav .nav-item {
 .video_player_header h3 {
   font-family: var(--font-gilroy-semibold);
   font-size: var(--heading-1);
-  color: var(--pc-black);
+  color: var(--pc-blue);
+  text-transform: capitalize;
 }
 .video_progress {
   background-color: orange;
@@ -1703,6 +1704,7 @@ nav .nav-item {
   display: flex;
   align-items: start;
   justify-content: space-between;
+  gap: 2rem;
 }
 .milestones .milestone_navigation:first-of-type {
   padding-top: 4rem;
@@ -1800,16 +1802,19 @@ nav .nav-item {
   gap: 8px;
   margin-top: 8px;
   margin-bottom: 20px;
+  font-family: var(--font-gilroy-regular);
 }
 .milestone_header h3 {
   text-transform: capitalize;
   margin-bottom: 10px;
   font-family: var(--font-gilroy-semibold);
+  color: var(--pc-blue);
   line-height: 18px;
   font-size: var(--big-text);
 }
 .milestone_header .module_number {
   text-transform: uppercase;
+  font-family: var(--font-gilroy-regular);
 }
 .attachment_info {
   display: flex;
@@ -1969,6 +1974,13 @@ nav .nav-item {
 .locked {
   opacity: 0.5; /* Adjust the opacity as needed */
   pointer-events: none; /* Disable interaction with locked modules */
+}
+
+.successMessage {
+  font-family: var(--font-gilroy-medium);
+  font-size: var(--normal-text);
+  color: var(--pc-blue);
+  text-align: center;
 }
 
 /* media queries */
@@ -2282,6 +2294,12 @@ nav .nav-item {
     padding: 0px;
     border: none;
     height: 600px;
+  }
+  #pdf_container{
+    width: 100% !important;
+  }
+  #pdf_container object {
+    width: 100% !important;
   }
   .main_player {
     order: 1;

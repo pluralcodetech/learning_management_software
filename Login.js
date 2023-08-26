@@ -1,11 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.querySelector("form");
 
+  const spinner = document.getElementById("spinner");
+
+  spinner.style.display = "none";
+
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.querySelector("#email").value;
     const password = document.querySelector("#password").value;
+
+    spinner.style.display = "inline-block";
 
     try {
       const response = await fetch(

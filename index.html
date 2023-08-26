@@ -9,6 +9,10 @@
       href="./assets/favicon-32x32.png"
       type="image/x-icon"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <title>Student Dashboard - Login</title>
   </head>
   <body>
@@ -45,11 +49,18 @@
           </div>
           <!-- //Remember me -->
           <div class="Remember__Me">
-
             <a href="./email_password_reset.html">Forgot Password</a>
           </div>
           <!-- //Button -->
-          <div><button class="btn" type="submit">Login</button></div>
+          <div>
+            <button class="btn" type="submit">
+              Login<i
+                style="margin-left: 8px"
+                id="spinner"
+                class="fa fa-circle-o-notch fa-spin"
+              ></i>
+            </button>
+          </div>
           <!-- <div class="navigate">
             Don’t have an account? <span><a href="">Create an Account</a></span>
           </div> -->
