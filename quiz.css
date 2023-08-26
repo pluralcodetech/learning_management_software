@@ -59,12 +59,12 @@
   background-color: yellow; /* You can adjust the color */
 }
 
-.green {
+.correct-answer {
   background-color: green;
   color: white;
 }
 
-.red {
+.incorrect-answer {
   background-color: red;
   color: white;
 }

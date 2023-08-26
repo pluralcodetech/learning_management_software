@@ -1,29 +1,156 @@
+// Get the current URL
+const currentUrl = window.location.href;
 
-    // Next module button logic
-    const nextModuleButton = tooltip.querySelector("#nextModule");
-    if (nextModuleButton) {
-      nextModuleButton.addEventListener("click", () => {
-        // Logic to move to the next module
-      });
+// Create a URL object from the current URL
+const url = new URL(currentUrl);
+
+// Get the moduleid, courseid, and quizid parameters from the URL
+const moduleId = url.searchParams.get("moduleid");
+const courseId = url.searchParams.get("courseid");
+const quizId = url.searchParams.get("quizid");
+
+// Retrieve the studyMaterial data from session storage
+const studyMaterialData = sessionStorage.getItem("studyMaterialsData");
+
+// Parse the JSON data if needed
+const parsedStudyMaterial = JSON.parse(studyMaterialData);
+
+// Assuming parsedStudyMaterial contains studyMaterialsData
+const quizData = parsedStudyMaterial.finalResult[0].lecture.attachments.find(
+  (attachment) => attachment.kind === "quiz"
+);
+
+const questionsBucket = quizData.quiz;
+console.log("questions bucket", questionsBucket);
+
+// Initialize an object to store user selections
+const userSelections = {};
+
+// Assuming you have the questionsBucket data as shown in your previous message
+
+const quizContainer = document.getElementById("quiz_container");
+const storedUserSelections =
+  JSON.parse(localStorage.getItem("userSelections")) || {};
+
+// Get the submit button by ID
+const submitButton = document.getElementById("submitQuiz");
+submitButton.style.backgroundColor = "#f8991d";
+submitButton.style.color = "#f6f5f6";
+
+questionsBucket.questions.forEach((questionData, index) => {
+  const questionElement = document.createElement("div");
+  questionElement.classList.add("quiz_main_question");
+
+  const questionTitle = document.createElement("h3");
+  questionTitle.textContent = `Question ${index + 1}: ${questionData.question}`;
+  questionElement.appendChild(questionTitle);
+
+  const optionsList = document.createElement("ul");
+  questionData.answers.forEach((option, optionIndex) => {
+    const optionItem = document.createElement("li");
+
+    const radioInput = document.createElement("input");
+    radioInput.type = "radio";
+    radioInput.name = `question-${index}`;
+    radioInput.value = option;
+    optionItem.appendChild(radioInput);
+
+    const optionLabel = document.createElement("label");
+    optionLabel.textContent = option;
+    optionItem.appendChild(optionLabel);
+
+    optionsList.appendChild(optionItem);
+
+    if (questionData.correct_answers.includes(option)) {
+      optionItem.classList.add("correct-answer");
+    }
+  });
+
+  optionsList.addEventListener("change", (event) => {
+    const selectedOption = event.target.value;
+    storedUserSelections[`question-${index}`] = selectedOption;
+    console.log("User Selections:", storedUserSelections);
+
+    // Find the correct answer(s) for the question
+    const correctAnswers = questionData.correct_answers;
+
+    // Display the correct answer(s) if the selected option is incorrect
+    if (!correctAnswers.includes(selectedOption)) {
+      console.log("Correct Answer(s):", correctAnswers);
     }
 
-    // Try again button logic
-    const tryAgainButton = tooltip.querySelector("#tryAgain");
-    if (tryAgainButton) {
-      tryAgainButton.addEventListener("click", () => {
-        quizContainer.innerHTML = "";
-        quizQuestions.forEach((question, questionIndex) => {
-          const userAnswerIndex = userSelections[questionIndex];
-          const questionElement = createQuestionElement(
-            question,
-            questionIndex,
-            userAnswerIndex
-          );
-          quizContainer.appendChild(questionElement);
-        });
-        quizContainer.appendChild(submitButton);
-        if (quizContainer.contains(tooltip)) {
-          quizContainer.removeChild(tooltip);
-        }
-      });
+    // Check if at least one option is chosen for each question
+    const allQuestionsAnswered = questionsBucket.questions.every((question) => {
+      return storedUserSelections.hasOwnProperty(
+        `question-${questionsBucket.questions.indexOf(question)}`
+      );
+    });
+
+    // Toggle the "clickable" class based on whether all questions are answered
+    if (allQuestionsAnswered) {
+      submitButton.classList.remove("clickable");
+    } else {
+      submitButton.classList.add("clickable");
     }
+
+    // Save updated user selections to local storage
+    localStorage.setItem(
+      "userSelections",
+      JSON.stringify(storedUserSelections)
+    );
+  });
+
+  // Check if user has a selection for this question
+  if (storedUserSelections.hasOwnProperty(`question-${index}`)) {
+    const selectedOption = storedUserSelections[`question-${index}`];
+    const radioInput = optionsList.querySelector(
+      `input[value="${selectedOption}"]`
+    );
+    if (radioInput) {
+      radioInput.checked = true;
+    }
+  }
+
+  questionElement.appendChild(optionsList);
+  quizContainer.appendChild(questionElement);
+});
+
+submitButton.addEventListener("click", (e) => {
+  e.preventDefault(); // Prevent the default form submission behavior
+
+  const resultsContainer = document.getElementById("quiz_results");
+  resultsContainer.innerHTML = ""; // Clear previous results
+
+  questionsBucket.questions.forEach((questionData, index) => {
+    const selectedOption = storedUserSelections[`question-${index}`];
+    const isCorrect = questionData.correct_answers.includes(selectedOption);
+
+    const resultElement = document.createElement("div");
+    resultElement.classList.add("quiz_result_item");
+    resultElement.textContent = `Question ${index + 1}: ${
+      isCorrect ? "Correct" : "Incorrect"
+    }`;
+
+    // Highlight correct and incorrect answers
+    if (selectedOption) {
+      if (isCorrect) {
+        resultElement.classList.add("correct-answer");
+      } else {
+        resultElement.classList.add("incorrect-answer");
+      }
+    }
+
+    resultsContainer.appendChild(resultElement);
+  });
+
+  // Clear local storage
+  // localStorage.removeItem("userSelections"); // Remove this line
+
+  // Optionally, you can reset the userSelections if needed
+  // for (const key in storedUserSelections) {
+  //   delete storedUserSelections[key];
+  // }
+
+  // Refresh the page if you want to allow retaking the quiz without a page reload
+  // window.location.reload();
+});

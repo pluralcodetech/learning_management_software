@@ -1,111 +1,209 @@
-// Get the current URL
-const currentUrl = window.location.href;
+document.addEventListener("DOMContentLoaded", async () => {
+  const goBackLink = document.getElementById("goBackLink");
 
-// Create a URL object from the current URL
-const url = new URL(currentUrl);
-
-// Get the moduleid, courseid, and quizid parameters from the URL
-const moduleId = url.searchParams.get("moduleid");
-const courseId = url.searchParams.get("courseid");
-const quizId = url.searchParams.get("quizid");
-
-// Retrieve the studyMaterial data from session storage
-const studyMaterialData = sessionStorage.getItem("studyMaterialsData");
-console.log(studyMaterialData);
-
-// Parse the study material data
-const parsedStudyMaterial = JSON.parse(studyMaterialData);
-
-// Access the quiz questions
-const questions =
-  parsedStudyMaterial.finalResult[0].lecture.attachments[0].quiz.questions;
-
-// Get the quiz container element by ID
-const quizContainer = document.getElementById("quiz_container");
-
-// Create a string to store the HTML content
-let htmlContent = "";
-
-// Iterate through the questions
-questions.forEach((question, index) => {
-  // Build the HTML for each question
-  htmlContent += `<div class="quiz_main_question">
-    <p><strong>${index + 1}:</strong> ${question.question}</p>
-    <ul class="answer-options">`;
-
-  // Add answer options to the HTML content
-  question.answers.forEach((answer, ansIndex) => {
-    htmlContent += `<li>
-      <input type="radio" name="question_${index}" value="${ansIndex}">
-      ${String.fromCharCode(97 + ansIndex)}. ${answer}
-    </li>`;
+  goBackLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.history.back();
   });
 
-  // Close the answer options list
-  htmlContent += "</ul>";
+  const submitButton = document.getElementById("submitQuiz");
+  submitButton.classList.add("locked"); // Initially lock the button
+  submitButton.style.color = "#f5f6fa";
+  submitButton.style.backgroundColor = "#f8991d";
 
-  // Add correct answer(s) to the HTML content
-  htmlContent += `<p><strong>Correct Answer:</strong> ${question.correct_answers.join(
-    ", "
-  )}</p></div>`;
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get("courseid");
+    const moduleId = urlParams.get("moduleid");
+    const quizId = urlParams.get("quizid");
+
+    const userDataString = JSON.parse(getCookie("userData"));
+    const mainData = JSON.parse(getCookie("apiData"));
+    const userToken = getCookie("userToken");
+
+    console.log("userData:", userDataString);
+    console.log("userToken:", userToken);
+    console.log("Main Data:", mainData);
+
+    if (userDataString && userToken) {
+      const profileNameElement = document.querySelector(".user_name");
+      const studentIdElement = document.querySelector(".student_id");
+      const initialsElement = document.querySelector(".initials span");
+
+      profileNameElement.textContent = userDataString.name;
+      studentIdElement.textContent = `Student ID: ${userDataString.id}`;
+
+      if (userDataString.name) {
+        const firstName = userDataString.name.split(" ")[0];
+        const firstInitial = firstName.charAt(0).toUpperCase();
+        initialsElement.textContent = firstInitial;
+      }
+
+      console.log("Course ID", courseId);
+      console.log("Module ID", moduleId);
+      console.log("Quiz ID", quizId);
+
+      // Retrieve study material data from local storage
+      const studyMaterialsDataLocalStorage = JSON.parse(
+        localStorage.getItem("studyMaterialsData")
+      );
+      console.log(
+        "Study Materials Data (LocalStorage):",
+        studyMaterialsDataLocalStorage
+      );
+
+      if (
+        studyMaterialsDataLocalStorage &&
+        studyMaterialsDataLocalStorage.finalResult
+      ) {
+        const lecture = studyMaterialsDataLocalStorage.finalResult[0].lecture;
+
+        if (lecture.attachments && lecture.attachments[0].quiz) {
+          const quizData = lecture.attachments[0].quiz;
+          const quizQuestions = quizData.questions;
+
+          const quizContainer = document.getElementById("quiz_container");
+
+          quizQuestions.forEach((question, index) => {
+            const questionElement = document.createElement("div");
+            questionElement.classList.add("quiz_main_question");
+            questionElement.innerHTML = `<h4>${index + 1}: ${
+              question.question
+            }</h4>`;
+
+            const answersElement = document.createElement("ul");
+            answersElement.classList.add("answers");
+
+            question.answers.forEach((answer, answerIndex) => {
+              const answerItem = document.createElement("li");
+
+              const radioInput = document.createElement("input");
+              radioInput.type = "radio";
+              radioInput.name = `question_${index}`;
+              radioInput.value = answerIndex; // Store the index of the selected answer
+              radioInput.addEventListener("change", () => {
+                // Store the user's answer selection in localStorage
+                storeUserAnswer(quizId, index, answerIndex);
+              });
+
+              // Retrieve user's answer selection from localStorage
+              const storedAnswers = getUserAnswers(quizId);
+              if (storedAnswers && storedAnswers[index] === answerIndex) {
+                radioInput.checked = true; // Set the radio button as selected
+              }
+
+              const answerLabel = document.createElement("label");
+              answerLabel.textContent = answer;
+
+              // Check if all questions have been answered
+              const allQuestionsAnswered = quizQuestions.every(
+                (question, idx) => {
+                  const stored = getUserAnswers(quizId);
+                  return stored && stored[idx] !== undefined;
+                }
+              );
+
+              // Enable or disable the submit button based on answers
+              if (allQuestionsAnswered) {
+                submitButton.classList.remove("locked");
+              } else {
+                submitButton.classList.add("locked");
+              }
+
+              answerItem.appendChild(radioInput);
+              answerItem.appendChild(answerLabel);
+              answersElement.appendChild(answerItem);
+            });
+
+            questionElement.appendChild(answersElement);
+            quizContainer.appendChild(questionElement);
+
+            // Print correct answers to console
+            console.log(
+              `Correct Answer for Question ${
+                index + 1
+              }: ${question.correct_answers.join(", ")}`
+            );
+          });
+        }
+      }
+
+
+    } else {
+      // Handle the case when user data or token is not available
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
 });
 
-// Set the generated HTML content to the quiz container
-quizContainer.innerHTML = htmlContent;
+function getCookie(cookieName) {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+    if (name === cookieName) {
+      return value;
+    }
+  }
+  return null;
+}
 
-// Create a Submit Quiz button
-const submitButton = document.createElement("button");
-submitButton.textContent = "Submit Quiz";
-submitButton.id = "submitQuiz";
+function storeUserAnswer(quizId, questionIndex, answerIndex) {
+  const storageKey = `userAnswers_${quizId}`;
+  let userAnswers = JSON.parse(localStorage.getItem(storageKey)) || {};
 
-// Append the button to the quiz container
-quizContainer.appendChild(submitButton);
+  userAnswers[questionIndex] = answerIndex;
+  localStorage.setItem(storageKey, JSON.stringify(userAnswers));
+}
 
-// Add "clickable" class to the button initially
-submitButton.classList.add("clickable");
-submitButton.style.backgroundColor = "#f8991d";
-submitButton.style.color = "#f5f6fa";
+function getUserAnswers(quizId) {
+  const storageKey = `userAnswers_${quizId}`;
+  return JSON.parse(localStorage.getItem(storageKey));
+}
 
-// Function to check if all questions are answered
-function checkAllQuestionsAnswered() {
-  const radioGroups = document.querySelectorAll(".answer-options");
-  for (let i = 0; i < radioGroups.length; i++) {
-    const selectedRadio = radioGroups[i].querySelector(
-      'input[type="radio"]:checked'
+function calculateScores(quizId, questions) {
+  const storedAnswers = getUserAnswers(quizId);
+  let score = 0;
+
+  questions.forEach((question, index) => {
+    if (
+      storedAnswers &&
+      storedAnswers[index] !== undefined &&
+      storedAnswers[index] === question.correct_answers[0]
+    ) {
+      score++;
+    }
+  });
+
+  console.log("User Score:", score);
+}
+
+function highlightAnswers(quizId, questions) {
+  const storedAnswers = getUserAnswers(quizId);
+
+  questions.forEach((question, index) => {
+    const answerIndex = storedAnswers ? storedAnswers[index] : undefined;
+
+    const questionElement = document.querySelector(
+      `.quiz_main_question:nth-child(${index + 1})`
     );
-    if (!selectedRadio) {
-      return false; // Return false if any question is not answered
-    }
-  }
-  return true; // All questions are answered
-}
 
-// Function to toggle "clickable" class on the button
-function toggleClickableClass() {
-  if (checkAllQuestionsAnswered()) {
-    submitButton.classList.remove("clickable");
-  } else {
-    submitButton.classList.add("clickable");
-  }
-}
+    if (questionElement) {
+      const answersElement = questionElement.querySelector(".answers");
+      const answerItems = answersElement.querySelectorAll("li");
 
-// Function to update local storage with user selections
-function updateLocalStorage() {
-  const selections = {};
-  radioButtons.forEach((radio) => {
-    if (radio.checked) {
-      const questionIndex = parseInt(radio.name.split("_")[1]);
-      selections[questionIndex] = parseInt(radio.value);
+      answerItems.forEach((answerItem, answerItemIndex) => {
+        if (answerItemIndex === answerIndex) {
+          answerItem.classList.add("selected-answer");
+          if (answerItemIndex === question.correct_answers[0]) {
+            answerItem.classList.add("correct-answer");
+          } else {
+            answerItem.classList.add("incorrect-answer");
+          }
+        } else {
+          answerItem.classList.remove("selected-answer");
+        }
+      });
     }
   });
-  localStorage.setItem("userSelections", JSON.stringify(selections));
 }
-
-// Add change event listeners to all radio buttons
-const radioButtons = document.querySelectorAll('input[type="radio"]');
-radioButtons.forEach((radio) => {
-  radio.addEventListener("change", toggleClickableClass);
-});
-
-// Initial check of all questions answered
-toggleClickableClass();

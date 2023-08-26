@@ -1877,6 +1877,10 @@ nav .nav-item {
   padding: 30px;
   border-radius: 5px;
 }
+.quiz_main_question h4 {
+  color: var(--pc-dark-gray);
+  font-weight: 500;
+}
 .quiz_main_question li {
   font-family: var(--font-gilroy-regular);
   font-weight: 400;

@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const goBackLink = document.getElementById("goBackLink");
+
+  goBackLink.addEventListener("click", (event) => {
+    event.preventDefault(); // Prevents the default link behavior (navigating to a new page)
+    window.history.back(); // Mimics the browser's back button action
+  });
   try {
     const userDataString = getCookie("userData");
     const userToken = getCookie("userToken");
@@ -145,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Add a click event listener to the "Complete Payment" button
       completePaymentButton.addEventListener("click", async () => {
         try {
-          spinner.style.display="inline-block"
+          spinner.style.display = "inline-block";
           const userToken = getCookie("userToken");
           console.log(userToken);
           const userDataString = getCookie("userData");
