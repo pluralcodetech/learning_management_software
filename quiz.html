@@ -86,7 +86,27 @@
             <div class="quiz_container" id="quiz_container">
               <h3>Assessment: Quiz</h3>
               <button id="submitQuiz">Submit</button>
-              <div id="quiz_results"></div>
+              <div id="quiz_results">
+                <div class="quiz_results_details">
+                  <div class="quiz_results_text">
+                    <i class="bx bx-check-circle"></i>
+                    <h3>Congratulations ! You Passed</h3>
+                    <h3 style="display: none">
+                      Sorry ! You Didn't Pass The Quiz
+                    </h3>
+                  </div>
+                  <div class="spans">
+                    <span>Grade Recieved: <span id="score">100%</span></span>
+                    <span>| To pass 70% or higher</span>
+                  </div>
+                </div>
+                <div class="quiz_results_btns">
+                  <button class="quiz_action_btn" style="display: none">
+                    Next Module
+                  </button>
+                  <button class="quiz_action_btn">Try Again</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
