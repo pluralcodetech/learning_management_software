@@ -16,55 +16,58 @@ document.addEventListener("DOMContentLoaded", async () => {
     const courseId = urlParams.get("courseid");
     const moduleId = urlParams.get("moduleid");
     const quizId = urlParams.get("quizid");
+    console.log("Course ID", courseId);
+    console.log("Module ID", moduleId);
+    console.log("Quiz ID", quizId);
 
-    const userDataString = JSON.parse(getCookie("userData"));
-    const mainData = JSON.parse(getCookie("apiData"));
     const userToken = getCookie("userToken");
+    console.log(userToken);
 
-    console.log("userData:", userDataString);
-    console.log("userToken:", userToken);
-    console.log("Main Data:", mainData);
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    console.log(userData);
 
-    if (userDataString && userToken) {
-      const profileNameElement = document.querySelector(".user_name");
-      const studentIdElement = document.querySelector(".student_id");
-      const initialsElement = document.querySelector(".initials span");
+    const mainData = JSON.parse(localStorage.getItem("apiData"));
+    console.log(mainData);
 
-      profileNameElement.textContent = userDataString.name;
-      studentIdElement.textContent = `Student ID: ${userDataString.id}`;
+    if (userData && userToken) {
+      const profileName = document.querySelector(".user_name");
+      const studentId = document.querySelector(".student_id");
+      const initials = document.querySelector(".initials span");
 
-      if (userDataString.name) {
-        const firstName = userDataString.name.split(" ")[0];
+      profileName.textContent = userData.name;
+      studentId.textContent = `Student ID: ${userData.id}`;
+
+      if (userData.name) {
+        const firstName = userData.name.split(" ")[0];
         const firstInitial = firstName.charAt(0).toUpperCase();
-        initialsElement.textContent = firstInitial;
+        initials.textContent = firstInitial;
       }
 
-      console.log("Course ID", courseId);
-      console.log("Module ID", moduleId);
-      console.log("Quiz ID", quizId);
-
-      // Retrieve study material data from local storage
       const studyMaterialsDataLocalStorage = JSON.parse(
-        localStorage.getItem("studyMaterialsData")
+        localStorage.getItem("studyMaterialsForCurrentModule")
       );
       console.log(
         "Study Materials Data (LocalStorage):",
         studyMaterialsDataLocalStorage
       );
 
-      if (
-        studyMaterialsDataLocalStorage &&
-        studyMaterialsDataLocalStorage.finalResult
-      ) {
-        const lecture = studyMaterialsDataLocalStorage.finalResult[0].lecture;
+      const quizData =
+        studyMaterialsDataLocalStorage.studyMaterials.finalResult.find(
+          (item) => item.lecture.name === "Quiz"
+        );
 
-        if (lecture.attachments && lecture.attachments[0].quiz) {
-          const quizData = lecture.attachments[0].quiz;
-          const quizQuestions = quizData.questions;
+      if (quizData && quizData.lecture.attachments) {
+        const quizContainer = document.querySelector(".quiz_container");
 
+        const quizAttachment = quizData.lecture.attachments.find(
+          (attachment) => attachment.kind === "quiz"
+        );
+
+        const quizQuestions = quizAttachment.quiz.questions;
+
+        if (quizAttachment && quizQuestions) {
           const quizContainer = document.getElementById("quiz_container");
           const quizResult = document.getElementById("quiz_results");
-
           quizQuestions.forEach((question, index) => {
             const questionElement = document.createElement("div");
             questionElement.classList.add("quiz_main_question");
@@ -104,6 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
               );
 
+              console.log(allQuestionsAnswered);
+
               // Enable or disable the submit button based on answers
               if (allQuestionsAnswered) {
                 submitButton.classList.remove("locked");
@@ -129,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const nextModule = document.getElementById("next_module");
             const tryAgain = document.getElementById("try_again");
 
+            //Submit button
             submitButton.addEventListener("click", () => {
               quizResult.classList.add("show");
 
@@ -186,47 +192,120 @@ document.addEventListener("DOMContentLoaded", async () => {
 
               scoreElement.textContent = `${Math.floor(percentageScore)}%`;
             });
-
+            // Try AGain Button
             tryAgain.addEventListener("click", (e) => {
               e.preventDefault();
-            
+
               // Hide the results and show the quiz
               quizResult.classList.remove("show");
               quizContainer.style.display = "block";
-            
+
               // Iterate through user selections and adjust styles
               question.answers.forEach((answer, answerIndex) => {
-                const answerItem = answersElement.querySelector(`li:nth-child(${answerIndex + 1})`);
+                const answerItem = answersElement.querySelector(
+                  `li:nth-child(${answerIndex + 1})`
+                );
                 const storedAnswers = getUserAnswers(quizId);
-                const userAnswerIndex = storedAnswers ? storedAnswers[index] : undefined;
+                const userAnswerIndex = storedAnswers
+                  ? storedAnswers[index]
+                  : undefined;
                 const answerLabel = answerItem.querySelector("label");
-            
+
                 if (userAnswerIndex === answerIndex) {
                   if (question.correct_answers.includes(answer)) {
-                       answerLabel.classList.add("correct-answer");
+                    answerLabel.classList.add("correct-answer");
                     answerLabel.classList.remove("incorrect-answer");
                   } else {
-                      answerLabel.classList.add("incorrect-answer");
+                    answerLabel.classList.add("incorrect-answer");
                     answerLabel.classList.remove("correct-answer");
                   }
                 } else {
-                  answerItem.classList.remove("correct-answer", "incorrect-answer");
-                  answerLabel.classList.remove("correct-text", "incorrect-text");
+                  answerItem.classList.remove(
+                    "correct-answer",
+                    "incorrect-answer"
+                  );
+                  answerLabel.classList.remove(
+                    "correct-text",
+                    "incorrect-text"
+                  );
                 }
               });
             });
-            
+            //Next Module
+            const nextModuleButton = document.getElementById("next_module");
+
+            nextModuleButton.addEventListener("click", async () => {
+              try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const quizId = urlParams.get("quizid");
+                const userScore = calculateUserScore(quizQuestions, quizId);
+
+                if (userScore >= 70) {
+                  // Unlock the next module using the API
+                  const unlockResult = await unlockNextModule(
+                    courseId,
+                    moduleId,
+                    userScore
+                  );
+
+                  // After successfully unlocking the next module
+                  if (
+                    unlockResult.message ===
+                    "congratulations next module unlocked"
+                  ) {
+                    // Handle the successful unlocking of the next module
+                    console.log("Next module unlocked successfully!");
+
+                    // Store the unlocked module ID in localStorage
+                    localStorage.setItem("unlockedModuleId", moduleId);
+
+                    // Find the index of the unlocked module in the course_module array
+                    const unlockedModuleIndex =
+                      mainData.enrolledcourses[0].course_module.findIndex(
+                        (module) => module.id === parseInt(moduleId)
+                      );
+
+                    if (
+                      unlockedModuleIndex !== -1 &&
+                      unlockedModuleIndex <
+                        mainData.enrolledcourses[0].course_module.length - 1
+                    ) {
+                      // Get the next module
+                      const nextModule =
+                        mainData.enrolledcourses[0].course_module[
+                          unlockedModuleIndex + 1
+                        ];
+
+                      // Store the ID of the next module in localStorage
+                      localStorage.setItem("nextModule", nextModule.id);
+
+                      // Redirect the user back to the my-courses.html page with the updated courseid parameter
+                      setTimeout(() => {
+                        window.location.href = `my-courses.html?courseid=${courseId}`;
+                      }, 10000);
+                    } else {
+                      console.log("No next module available.");
+                    }
+                  }
+                } else {
+                  console.log(
+                    "User's score is below 70. Cannot unlock the next module."
+                  );
+                }
+              } catch (error) {
+                console.error("Error:", error);
+              }
+            });
           });
         }
       }
-    } else {
-      // Handle the case when user data or token is not available
     }
   } catch (error) {
     console.error("Error:", error);
   }
 });
 
+// GEt Cookie
 function getCookie(cookieName) {
   const cookies = document.cookie.split("; ");
   for (const cookie of cookies) {
@@ -238,6 +317,7 @@ function getCookie(cookieName) {
   return null;
 }
 
+//Store USer Answer
 function storeUserAnswer(quizId, questionIndex, answerIndex) {
   const storageKey = `userAnswers_${quizId}`;
   let userAnswers = JSON.parse(localStorage.getItem(storageKey)) || {};
@@ -246,7 +326,76 @@ function storeUserAnswer(quizId, questionIndex, answerIndex) {
   localStorage.setItem(storageKey, JSON.stringify(userAnswers));
 }
 
+//Get user answers
 function getUserAnswers(quizId) {
   const storageKey = `userAnswers_${quizId}`;
   return JSON.parse(localStorage.getItem(storageKey));
+}
+
+async function unlockNextModule(userScore) {
+  const apiUrl =
+    "https://backend.pluralcode.institute/student/unlock-loop-module";
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  // Retrieve user token from cookies or wherever you store it
+  const userToken = getCookie("userToken");
+  if (!userToken) {
+    alert("User Credentials Not Found");
+    return;
+  }
+
+  myHeaders.append("Authorization", `Bearer ${userToken}`);
+
+  // Retrieve course and module IDs from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const courseId = urlParams.get("courseid");
+  const moduleId = urlParams.get("moduleid");
+
+  const requestBody = JSON.stringify({
+    course_id: courseId,
+    module_id: moduleId,
+    quizscore: userScore,
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: requestBody,
+    redirect: "follow",
+  };
+
+  const response = await fetch(apiUrl, requestOptions);
+  const result = await response.json();
+  return result;
+}
+
+function calculateUserScore(quizQuestions, quizId) {
+  let userScore = 0;
+  const totalQuestions = quizQuestions.length;
+
+  quizQuestions.forEach((question, index) => {
+    const storedAnswers = getUserAnswers(quizId);
+    const userAnswerIndex = storedAnswers ? storedAnswers[index] : undefined;
+
+    const correctAnswerIndices = question.answers.reduce(
+      (indices, answer, answerIndex) => {
+        if (question.correct_answers.includes(answer)) {
+          indices.push(answerIndex);
+        }
+        return indices;
+      },
+      []
+    );
+
+    if (
+      userAnswerIndex !== undefined &&
+      correctAnswerIndices.includes(userAnswerIndex)
+    ) {
+      userScore += 1;
+    }
+  });
+
+  const percentageScore = (userScore / totalQuestions) * 100;
+  return Math.floor(percentageScore);
 }

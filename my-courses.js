@@ -6,12 +6,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.back(); // Mimics the browser's back button action
   });
   try {
-    const userDataString = getCookie("userData");
+    // Retrieve userToken from cookies
     const userToken = getCookie("userToken");
 
-    if (userDataString && userToken) {
-      const userData = JSON.parse(userDataString);
+    // Retrieve userData from local storage
+    const userData = localStorage.getItem("userData");
+    const userDataString = userData;
+    console.log(userData);
 
+    if (userDataString && userToken) {
       const requestOptions = {
         method: "GET",
         headers: {
@@ -29,9 +32,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const expirationDate = new Date();
       expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-      document.cookie = `apiData=${JSON.stringify(
-        result
-      )}; expires=${expirationDate.toUTCString()}; path=/; SameSite=None; Secure`;
+
+      // Store the result data in local storage
+      localStorage.setItem("apiData", JSON.stringify(result));
+
+      // Also store the expiration date in local storage
+      localStorage.setItem("apiDataExpiration", expirationDate.getTime());
 
       console.log("User Data:", userData);
       console.log("User Token:", userToken);
@@ -55,6 +61,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       const targetCourse = result.enrolledcourses.find(
         (course) => course.id === parseInt(courseId)
       );
+
+      const nextModuleId = localStorage.getItem("nextModule");
+
+      // Wait for the module cards to load before accessing them
+      window.addEventListener("load", () => {
+        const nextModuleCard = document.querySelector(
+          `[data-module-id="${nextModuleId}"]`
+        );
+
+        if (nextModuleCard) {
+          // Enable the next module by removing the "locked" class or any other relevant changes
+          // For example:
+          nextModuleCard.classList.remove("locked");
+        } else {
+          console.log("Next module card not found.");
+        }
+      });
 
       const modulesContainer = document.querySelector(".module_containers");
 
@@ -216,6 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         for (const [index, module] of targetCourse.course_module.entries()) {
           const numContents = module.lectures.length;
           const moduleCard = document.createElement("div");
+          moduleCard.setAttribute("data-module-id", module.id); // Add this line
           moduleCard.classList.add("module_card");
 
           // Check if the module is locked or unlocked

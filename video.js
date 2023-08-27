@@ -41,8 +41,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   pdfContainer.style.display = "none";
 
   try {
-    const userDataString = getCookie("userData");
+    // Retrieve userToken from cookies
     const userToken = getCookie("userToken");
+
+    // Retrieve userData from local storage
+    const userDataString = localStorage.getItem("userData");
 
     if (userDataString && userToken) {
       const userData = JSON.parse(userDataString);
@@ -116,6 +119,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             targetCourse.teachable_course_id,
             targetModule.lectures,
             userData
+          );
+
+          // Save study materials in local storage with expiration date one year from now
+          const expirationDate = new Date();
+          expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+
+          const studyMaterialsData = {
+            studyMaterials,
+            expiration: expirationDate.getTime(), // Save expiration date as timestamp
+          };
+
+          localStorage.setItem(
+            "studyMaterialsForCurrentModule",
+            JSON.stringify(studyMaterialsData)
           );
 
           console.log("Study Materials for Current Module:", studyMaterials);
@@ -230,7 +247,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                     `;
                       }
                     }, 180000);
+                    // Listen for time updates while the video is playing
+                    videoPlayer.addEventListener("timeupdate", () => {
+                      // Save the current progress in local storage
+                      localStorage.setItem(
+                        savedProgressKey,
+                        videoPlayer.currentTime
+                      );
+                    });
                   });
+                  // Restore saved video progress if available
+                  const savedProgressKey = `video_progress_${courseId}_${moduleId}_${lecture.position}`;
+                  const savedProgress = localStorage.getItem(savedProgressKey);
+
+                  if (savedProgress) {
+                    // Update the video progress to the saved value
+                    videoPlayer.currentTime = parseFloat(savedProgress);
+                  }
                 } else if (attachment.kind === "pdf_embed") {
                   label = "PDF";
                   icon = "<i class='bx bx-file'></i>";

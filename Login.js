@@ -32,15 +32,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
 
       if (response.ok && data.message === "Login Successful Done") {
-        // Storing cookies with "SameSite" attribute
+        // Storing userToken in a cookie with "SameSite" attribute
         const expirationDate = new Date();
         expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-        document.cookie = `userData=${JSON.stringify(
-          data.user
-        )}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax`;
         document.cookie = `userToken=${
           data.token
         }; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax`;
+
+        // Storing userData in localStorage
+        localStorage.setItem("userData", JSON.stringify(data.user));
 
         window.location.href = "dashboard.html";
       } else {

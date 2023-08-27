@@ -1,156 +1,296 @@
-// Get the current URL
-const currentUrl = window.location.href;
+document.addEventListener("DOMContentLoaded", async () => {
+  const goBackLink = document.getElementById("goBackLink");
 
-// Create a URL object from the current URL
-const url = new URL(currentUrl);
-
-// Get the moduleid, courseid, and quizid parameters from the URL
-const moduleId = url.searchParams.get("moduleid");
-const courseId = url.searchParams.get("courseid");
-const quizId = url.searchParams.get("quizid");
-
-// Retrieve the studyMaterial data from session storage
-const studyMaterialData = sessionStorage.getItem("studyMaterialsData");
-
-// Parse the JSON data if needed
-const parsedStudyMaterial = JSON.parse(studyMaterialData);
-
-// Assuming parsedStudyMaterial contains studyMaterialsData
-const quizData = parsedStudyMaterial.finalResult[0].lecture.attachments.find(
-  (attachment) => attachment.kind === "quiz"
-);
-
-const questionsBucket = quizData.quiz;
-console.log("questions bucket", questionsBucket);
-
-// Initialize an object to store user selections
-const userSelections = {};
-
-// Assuming you have the questionsBucket data as shown in your previous message
-
-const quizContainer = document.getElementById("quiz_container");
-const storedUserSelections =
-  JSON.parse(localStorage.getItem("userSelections")) || {};
-
-// Get the submit button by ID
-const submitButton = document.getElementById("submitQuiz");
-submitButton.style.backgroundColor = "#f8991d";
-submitButton.style.color = "#f6f5f6";
-
-questionsBucket.questions.forEach((questionData, index) => {
-  const questionElement = document.createElement("div");
-  questionElement.classList.add("quiz_main_question");
-
-  const questionTitle = document.createElement("h3");
-  questionTitle.textContent = `Question ${index + 1}: ${questionData.question}`;
-  questionElement.appendChild(questionTitle);
-
-  const optionsList = document.createElement("ul");
-  questionData.answers.forEach((option, optionIndex) => {
-    const optionItem = document.createElement("li");
-
-    const radioInput = document.createElement("input");
-    radioInput.type = "radio";
-    radioInput.name = `question-${index}`;
-    radioInput.value = option;
-    optionItem.appendChild(radioInput);
-
-    const optionLabel = document.createElement("label");
-    optionLabel.textContent = option;
-    optionItem.appendChild(optionLabel);
-
-    optionsList.appendChild(optionItem);
-
-    if (questionData.correct_answers.includes(option)) {
-      optionItem.classList.add("correct-answer");
-    }
+  goBackLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.history.back();
   });
 
-  optionsList.addEventListener("change", (event) => {
-    const selectedOption = event.target.value;
-    storedUserSelections[`question-${index}`] = selectedOption;
-    console.log("User Selections:", storedUserSelections);
+  const submitButton = document.getElementById("submitQuiz");
+  submitButton.classList.add("locked"); // Initially lock the button
+  submitButton.style.color = "#f5f6fa";
+  submitButton.style.backgroundColor = "#f8991d";
 
-    // Find the correct answer(s) for the question
-    const correctAnswers = questionData.correct_answers;
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get("courseid");
+    const moduleId = urlParams.get("moduleid");
+    const quizId = urlParams.get("quizid");
 
-    // Display the correct answer(s) if the selected option is incorrect
-    if (!correctAnswers.includes(selectedOption)) {
-      console.log("Correct Answer(s):", correctAnswers);
-    }
+    // const userDataString = localStorage.getItem("userData");
+    // Retrieve userToken from cookies
+    const userToken = getCookie("userToken");
 
-    // Check if at least one option is chosen for each question
-    const allQuestionsAnswered = questionsBucket.questions.every((question) => {
-      return storedUserSelections.hasOwnProperty(
-        `question-${questionsBucket.questions.indexOf(question)}`
+    // Retrieve userData from local storage
+    const userData = localStorage.getItem("userData");
+
+    // Parse the userDataString to get the userData object
+    const userDataString = JSON.parse(userData);
+
+    // Now you can use the userData object
+    console.log(userDataString.name); // For example, accessing the user's name
+
+    console.log("userData:", userDataString);
+    console.log("userToken:", userToken);
+    // console.log("Main Data:", mainData);
+
+    if (userDataString && userToken) {
+      const profileNameElement = document.querySelector(".user_name");
+      const studentIdElement = document.querySelector(".student_id");
+      const initialsElement = document.querySelector(".initials span");
+
+      profileNameElement.textContent = userDataString.name;
+      studentIdElement.textContent = `Student ID: ${userDataString.id}`;
+
+      if (userDataString.name) {
+        const firstName = userDataString.name.split(" ")[0];
+        const firstInitial = firstName.charAt(0).toUpperCase();
+        initialsElement.textContent = firstInitial;
+      }
+
+      console.log("Course ID", courseId);
+      console.log("Module ID", moduleId);
+      console.log("Quiz ID", quizId);
+
+      // Retrieve study material data from local storage
+      const studyMaterialsDataLocalStorage = JSON.parse(
+        localStorage.getItem("studyMaterialsData")
       );
-    });
+      console.log(
+        "Study Materials Data (LocalStorage):",
+        studyMaterialsDataLocalStorage
+      );
 
-    // Toggle the "clickable" class based on whether all questions are answered
-    if (allQuestionsAnswered) {
-      submitButton.classList.remove("clickable");
+      if (
+        studyMaterialsDataLocalStorage &&
+        studyMaterialsDataLocalStorage.finalResult
+      ) {
+        const lecture = studyMaterialsDataLocalStorage.finalResult[0].lecture;
+
+        if (lecture.attachments && lecture.attachments[0].kind === "quiz") {
+          const quizData = lecture.attachments[0].quiz;
+          const quizQuestions = quizData.questions;
+
+          const quizContainer = document.getElementById("quiz_container");
+          const quizResult = document.getElementById("quiz_results");
+
+          quizQuestions.forEach((question, index) => {
+            const questionElement = document.createElement("div");
+            questionElement.classList.add("quiz_main_question");
+            questionElement.innerHTML = `<h4>${index + 1}: ${
+              question.question
+            }</h4>`;
+
+            const answersElement = document.createElement("ul");
+            answersElement.classList.add("answers");
+
+            question.answers.forEach((answer, answerIndex) => {
+              const answerItem = document.createElement("li");
+
+              const radioInput = document.createElement("input");
+              radioInput.type = "radio";
+              radioInput.name = `question_${index}`;
+              radioInput.value = answerIndex; // Store the index of the selected answer
+              radioInput.addEventListener("change", () => {
+                // Store the user's answer selection in localStorage
+                storeUserAnswer(quizId, index, answerIndex);
+              });
+
+              // Retrieve user's answer selection from localStorage
+              const storedAnswers = getUserAnswers(quizId);
+              if (storedAnswers && storedAnswers[index] === answerIndex) {
+                radioInput.checked = true; // Set the radio button as selected
+              }
+
+              const answerLabel = document.createElement("label");
+              answerLabel.textContent = answer;
+
+              // Check if all questions have been answered
+              const allQuestionsAnswered = quizQuestions.every(
+                (question, idx) => {
+                  const stored = getUserAnswers(quizId);
+                  return stored && stored[idx] !== undefined;
+                }
+              );
+
+              // Enable or disable the submit button based on answers
+              if (allQuestionsAnswered) {
+                submitButton.classList.remove("locked");
+              } else {
+                submitButton.classList.add("locked");
+              }
+
+              answerItem.appendChild(radioInput);
+              answerItem.appendChild(answerLabel);
+              answersElement.appendChild(answerItem);
+            });
+
+            questionElement.appendChild(answersElement);
+            quizContainer.appendChild(questionElement);
+
+            // Print correct answers to console
+            console.log(
+              `Correct Answer for Question ${
+                index + 1
+              }: ${question.correct_answers.join(", ")}`
+            );
+
+            const nextModule = document.getElementById("next_module");
+            const tryAgain = document.getElementById("try_again");
+
+            submitButton.addEventListener("click", () => {
+              quizResult.classList.add("show");
+
+              quizContainer.style.display = "none";
+
+              const scoreElement = document.getElementById("score");
+              const congratsText = document.getElementById("congrats");
+              const failedText = document.getElementById("failed");
+
+              nextModule.style.display = "none";
+              tryAgain.style.display = "none";
+              congratsText.style.display = "none";
+              failedText.style.display = "none";
+
+              let userScore = 0;
+              const totalQuestions = quizQuestions.length;
+
+              quizQuestions.forEach((question, index) => {
+                const storedAnswers = getUserAnswers(quizId);
+                const userAnswerIndex = storedAnswers
+                  ? storedAnswers[index]
+                  : undefined;
+
+                const correctAnswerIndices = question.answers.reduce(
+                  (indices, answer, answerIndex) => {
+                    if (question.correct_answers.includes(answer)) {
+                      indices.push(answerIndex);
+                    }
+                    return indices;
+                  },
+                  []
+                );
+
+                if (
+                  userAnswerIndex !== undefined &&
+                  correctAnswerIndices.includes(userAnswerIndex)
+                ) {
+                  userScore += 1;
+                }
+              });
+
+              const percentageScore = (userScore / totalQuestions) * 100;
+
+              if (percentageScore >= 70) {
+                congratsText.style.display = "block";
+                nextModule.style.display = "block";
+              } else {
+                tryAgain.style.display = "block";
+                failedText.style.display = "block";
+              }
+
+              if (percentageScore < 70) {
+                scoreElement.style.color = "red";
+              }
+
+              scoreElement.textContent = `${Math.floor(percentageScore)}%`;
+            });
+
+            tryAgain.addEventListener("click", (e) => {
+              e.preventDefault();
+
+              // Hide the results and show the quiz
+              quizResult.classList.remove("show");
+              quizContainer.style.display = "block";
+
+              // Iterate through user selections and adjust styles
+              question.answers.forEach((answer, answerIndex) => {
+                const answerItem = answersElement.querySelector(
+                  `li:nth-child(${answerIndex + 1})`
+                );
+                const storedAnswers = getUserAnswers(quizId);
+                const userAnswerIndex = storedAnswers
+                  ? storedAnswers[index]
+                  : undefined;
+                const answerLabel = answerItem.querySelector("label");
+
+                if (userAnswerIndex === answerIndex) {
+                  if (question.correct_answers.includes(answer)) {
+                    answerLabel.classList.add("correct-answer");
+                    answerLabel.classList.remove("incorrect-answer");
+                  } else {
+                    answerLabel.classList.add("incorrect-answer");
+                    answerLabel.classList.remove("correct-answer");
+                  }
+                } else {
+                  answerItem.classList.remove(
+                    "correct-answer",
+                    "incorrect-answer"
+                  );
+                  answerLabel.classList.remove(
+                    "correct-text",
+                    "incorrect-text"
+                  );
+                }
+              });
+            });
+          });
+        }
+      }
     } else {
-      submitButton.classList.add("clickable");
+      // Handle the case when user data or token is not available
     }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+});
 
-    // Save updated user selections to local storage
-    localStorage.setItem(
-      "userSelections",
-      JSON.stringify(storedUserSelections)
-    );
-  });
-
-  // Check if user has a selection for this question
-  if (storedUserSelections.hasOwnProperty(`question-${index}`)) {
-    const selectedOption = storedUserSelections[`question-${index}`];
-    const radioInput = optionsList.querySelector(
-      `input[value="${selectedOption}"]`
-    );
-    if (radioInput) {
-      radioInput.checked = true;
+function getCookie(cookieName) {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+    if (name === cookieName) {
+      return value;
     }
   }
+  return null;
+}
 
-  questionElement.appendChild(optionsList);
-  quizContainer.appendChild(questionElement);
-});
+function storeUserAnswer(quizId, questionIndex, answerIndex) {
+  const storageKey = `userAnswers_${quizId}`;
+  let userAnswers = JSON.parse(localStorage.getItem(storageKey)) || {};
 
-submitButton.addEventListener("click", (e) => {
-  e.preventDefault(); // Prevent the default form submission behavior
+  userAnswers[questionIndex] = answerIndex;
+  localStorage.setItem(storageKey, JSON.stringify(userAnswers));
+}
 
-  const resultsContainer = document.getElementById("quiz_results");
-  resultsContainer.innerHTML = ""; // Clear previous results
+function getUserAnswers(quizId) {
+  const storageKey = `userAnswers_${quizId}`;
+  return JSON.parse(localStorage.getItem(storageKey));
+}
 
-  questionsBucket.questions.forEach((questionData, index) => {
-    const selectedOption = storedUserSelections[`question-${index}`];
-    const isCorrect = questionData.correct_answers.includes(selectedOption);
+// Function to retrieve a cookie by name
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
 
-    const resultElement = document.createElement("div");
-    resultElement.classList.add("quiz_result_item");
-    resultElement.textContent = `Question ${index + 1}: ${
-      isCorrect ? "Correct" : "Incorrect"
-    }`;
+// Function to clear a specific cookie
+function clearCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
 
-    // Highlight correct and incorrect answers
-    if (selectedOption) {
-      if (isCorrect) {
-        resultElement.classList.add("correct-answer");
-      } else {
-        resultElement.classList.add("incorrect-answer");
-      }
-    }
+// Function to log out the user and clear cookies
+function logoutUser() {
+  clearCookie("userData");
+  clearCookie("userToken");
+  clearCookie("studyMaterialsData");
+  clearCookie("studyMaterialsByModule");
+  clearCookie("apiData");
 
-    resultsContainer.appendChild(resultElement);
-  });
+  sessionStorage.removeItem("userData");
+  sessionStorage.removeItem("userToken");
 
-  // Clear local storage
-  // localStorage.removeItem("userSelections"); // Remove this line
-
-  // Optionally, you can reset the userSelections if needed
-  // for (const key in storedUserSelections) {
-  //   delete storedUserSelections[key];
-  // }
-
-  // Refresh the page if you want to allow retaking the quiz without a page reload
-  // window.location.reload();
-});
+  window.location.href = "./index.html"; // Redirect to the login page
+}

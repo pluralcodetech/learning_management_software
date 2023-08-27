@@ -12,8 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const makeAPICall = async () => {
       console.log("API recalled");
 
-      const userDataString = getCookie("userData");
+      // Retrieve userToken from cookies
       const userToken = getCookie("userToken");
+
+      // Retrieve userData from local storage
+      const userData = localStorage.getItem("userData");
+      const userDataString = JSON.parse(userData);
 
       if (userDataString && userToken) {
         const requestOptions = {
@@ -342,7 +346,6 @@ document.addEventListener("DOMContentLoaded", () => {
           otherChevronDownIcon.style.display = "none";
         }
       });
-
     });
   });
 });

@@ -342,6 +342,7 @@ nav .nav-item {
   display: flex;
   align-items: center;
   justify-content: start;
+  flex-wrap: wrap;
   gap: 35px;
   border-radius: 8px;
   height: max-content;
@@ -721,7 +722,7 @@ nav .nav-item {
   width: 100%;
 }
 .course_page_details h3 {
-  width: 50%;
+  width: 55%;
   font-family: var(--font-gilroy-medium);
   color: var(--pc-blue);
   font-size: var(--heading-1);
@@ -756,11 +757,12 @@ nav .nav-item {
   background-color: var(--pc-blue);
   height: 38px;
   width: 50%;
+  padding: 0px 10px;
   border: none;
   outline: none;
   border-radius: 8px;
   font-family: var(--font-gilroy-medium);
-  font-size: var(--small-text);
+  font-size: 12px;
   color: var(--pc-white-white);
   cursor: pointer;
 }
@@ -795,6 +797,13 @@ nav .nav-item {
 .course_page_cards {
   height: 100vh;
   margin-bottom: 3rem;
+}
+.course_page_cards .no_course_found {
+  display: none;
+  font-size: var(--big-text);
+  margin: 25px;
+  margin-top: 50px;
+  text-align: center;
 }
 .course_page_cards img {
   width: 100px;
@@ -2299,7 +2308,7 @@ nav .nav-item {
     border: none;
     height: 600px;
   }
-  #pdf_container{
+  #pdf_container {
     width: 100% !important;
   }
   #pdf_container object {
