@@ -2456,6 +2456,9 @@ nav .nav-item {
     top: 17px !important;
     right: 10px !important;
   }
+  .module_details_text h5 {
+    justify-content: center;
+  }
 }
 @media (min-width: 768px) and (max-width: 1030px) {
   body {

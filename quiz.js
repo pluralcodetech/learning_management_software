@@ -191,6 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               }
 
               scoreElement.textContent = `${Math.floor(percentageScore)}%`;
+              scoreElement.style.color = "green";
             });
             // Try AGain Button
             tryAgain.addEventListener("click", (e) => {
