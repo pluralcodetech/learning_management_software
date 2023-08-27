@@ -1996,6 +1996,13 @@ nav .nav-item {
   text-align: center;
 }
 
+.noCertTooltip {
+  font-size: var(--big-text);
+  margin: 35px 5px;
+  font-family: var(--font-gilroy-medium);
+  text-align: center;
+}
+
 /* media queries */
 @media (max-width: 767px) {
   main section:last-of-type .header {
@@ -2655,6 +2662,7 @@ nav .nav-item {
   .community__ {
     flex-direction: column;
     margin-bottom: 35px;
+    padding: 25px;
   }
   .community__ a {
     font-size: var(--normal-text);
@@ -2847,6 +2855,11 @@ nav .nav-item {
   }
   .payment .mobile_fix {
     text-align: center;
+  }
+  .dashboard_video_content {
+    padding: 25px;
+    flex-direction: column;
+    gap: 2rem;
   }
   .payment_CC {
     padding: 55px 20px;

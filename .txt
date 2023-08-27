@@ -1,296 +1,80 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const goBackLink = document.getElementById("goBackLink");
+          // Function to show certificate cards content
+          const showCertificateCards = () => {
+            const courseCardsContainer =
+              document.getElementById("course_cards");
+            const certificateCardsContainer =
+              document.getElementById("certificate_cards");
+            const certificateModal =
+              document.getElementById("certificate_modal");
+            const accordion = document.querySelector(".accordion");
 
-  goBackLink.addEventListener("click", (event) => {
-    event.preventDefault();
-    window.history.back();
-  });
+            accordion.style.display = "none";
 
-  const submitButton = document.getElementById("submitQuiz");
-  submitButton.classList.add("locked"); // Initially lock the button
-  submitButton.style.color = "#f5f6fa";
-  submitButton.style.backgroundColor = "#f8991d";
+            // Clear any existing cards
+            certificateCardsContainer.innerHTML = "";
 
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const courseId = urlParams.get("courseid");
-    const moduleId = urlParams.get("moduleid");
-    const quizId = urlParams.get("quizid");
+            // Loop through enrolled courses and create certificate cards
+            result.enrolledcourses.forEach((course) => {
+              const card = document.createElement("div");
+              card.classList.add("certificate_card");
 
-    // const userDataString = localStorage.getItem("userData");
-    // Retrieve userToken from cookies
-    const userToken = getCookie("userToken");
+              // Create and set course image
+              const courseImage = document.createElement("img");
+              courseImage.src = course.course_image_url;
+              card.appendChild(courseImage);
 
-    // Retrieve userData from local storage
-    const userData = localStorage.getItem("userData");
+              // Create and set course name
+              const courseName = document.createElement("h4");
+              courseName.textContent = course.course_name;
+              courseName.classList.add("certificate_card_course_title");
+              // card.appendChild(courseName);
 
-    // Parse the userDataString to get the userData object
-    const userDataString = JSON.parse(userData);
+              // Create and set text for successfully completed
+              const completedText = document.createElement("p");
+              completedText.textContent = "Successfully Completed";
+              // card.appendChild(completedText);
 
-    // Now you can use the userData object
-    console.log(userDataString.name); // For example, accessing the user's name
+              const course_cert_details = document.createElement("div");
+              course_cert_details.appendChild(courseName);
+              course_cert_details.appendChild(completedText);
 
-    console.log("userData:", userDataString);
-    console.log("userToken:", userToken);
-    // console.log("Main Data:", mainData);
-
-    if (userDataString && userToken) {
-      const profileNameElement = document.querySelector(".user_name");
-      const studentIdElement = document.querySelector(".student_id");
-      const initialsElement = document.querySelector(".initials span");
-
-      profileNameElement.textContent = userDataString.name;
-      studentIdElement.textContent = `Student ID: ${userDataString.id}`;
-
-      if (userDataString.name) {
-        const firstName = userDataString.name.split(" ")[0];
-        const firstInitial = firstName.charAt(0).toUpperCase();
-        initialsElement.textContent = firstInitial;
-      }
-
-      console.log("Course ID", courseId);
-      console.log("Module ID", moduleId);
-      console.log("Quiz ID", quizId);
-
-      // Retrieve study material data from local storage
-      const studyMaterialsDataLocalStorage = JSON.parse(
-        localStorage.getItem("studyMaterialsData")
-      );
-      console.log(
-        "Study Materials Data (LocalStorage):",
-        studyMaterialsDataLocalStorage
-      );
-
-      if (
-        studyMaterialsDataLocalStorage &&
-        studyMaterialsDataLocalStorage.finalResult
-      ) {
-        const lecture = studyMaterialsDataLocalStorage.finalResult[0].lecture;
-
-        if (lecture.attachments && lecture.attachments[0].kind === "quiz") {
-          const quizData = lecture.attachments[0].quiz;
-          const quizQuestions = quizData.questions;
-
-          const quizContainer = document.getElementById("quiz_container");
-          const quizResult = document.getElementById("quiz_results");
-
-          quizQuestions.forEach((question, index) => {
-            const questionElement = document.createElement("div");
-            questionElement.classList.add("quiz_main_question");
-            questionElement.innerHTML = `<h4>${index + 1}: ${
-              question.question
-            }</h4>`;
-
-            const answersElement = document.createElement("ul");
-            answersElement.classList.add("answers");
-
-            question.answers.forEach((answer, answerIndex) => {
-              const answerItem = document.createElement("li");
-
-              const radioInput = document.createElement("input");
-              radioInput.type = "radio";
-              radioInput.name = `question_${index}`;
-              radioInput.value = answerIndex; // Store the index of the selected answer
-              radioInput.addEventListener("change", () => {
-                // Store the user's answer selection in localStorage
-                storeUserAnswer(quizId, index, answerIndex);
+              // Create button
+              const viewButton = document.createElement("button");
+              viewButton.classList.add("view");
+              viewButton.textContent = "View";
+              viewButton.addEventListener("click", () => {
+                // Show certificate modal with course details
+                showCertificateModal(course);
               });
 
-              // Retrieve user's answer selection from localStorage
-              const storedAnswers = getUserAnswers(quizId);
-              if (storedAnswers && storedAnswers[index] === answerIndex) {
-                radioInput.checked = true; // Set the radio button as selected
-              }
-
-              const answerLabel = document.createElement("label");
-              answerLabel.textContent = answer;
-
-              // Check if all questions have been answered
-              const allQuestionsAnswered = quizQuestions.every(
-                (question, idx) => {
-                  const stored = getUserAnswers(quizId);
-                  return stored && stored[idx] !== undefined;
-                }
+              const course_cert_details_container =
+                document.createElement("div");
+              course_cert_details_container.classList.add(
+                "course_cert_details_container"
               );
+              course_cert_details_container.appendChild(course_cert_details);
+              course_cert_details_container.appendChild(viewButton);
+              card.appendChild(course_cert_details_container);
 
-              // Enable or disable the submit button based on answers
-              if (allQuestionsAnswered) {
-                submitButton.classList.remove("locked");
-              } else {
-                submitButton.classList.add("locked");
-              }
-
-              answerItem.appendChild(radioInput);
-              answerItem.appendChild(answerLabel);
-              answersElement.appendChild(answerItem);
+              // Append card to container
+              certificateCardsContainer.appendChild(card);
             });
 
-            questionElement.appendChild(answersElement);
-            quizContainer.appendChild(questionElement);
-
-            // Print correct answers to console
-            console.log(
-              `Correct Answer for Question ${
-                index + 1
-              }: ${question.correct_answers.join(", ")}`
+            certificateCardsContainer.style.display = "block";
+            certificateCardsContainer.classList.add(
+              "course_certificate_container"
             );
+            certificateModal.style.display = "none";
+            courseCardsContainer.style.display = "none";
 
-            const nextModule = document.getElementById("next_module");
-            const tryAgain = document.getElementById("try_again");
+            // Add active class to "Certificates" button
+            const certificatesButton = document.getElementById(
+              "certificates_button"
+            );
+            certificatesButton.classList.add("active");
 
-            submitButton.addEventListener("click", () => {
-              quizResult.classList.add("show");
-
-              quizContainer.style.display = "none";
-
-              const scoreElement = document.getElementById("score");
-              const congratsText = document.getElementById("congrats");
-              const failedText = document.getElementById("failed");
-
-              nextModule.style.display = "none";
-              tryAgain.style.display = "none";
-              congratsText.style.display = "none";
-              failedText.style.display = "none";
-
-              let userScore = 0;
-              const totalQuestions = quizQuestions.length;
-
-              quizQuestions.forEach((question, index) => {
-                const storedAnswers = getUserAnswers(quizId);
-                const userAnswerIndex = storedAnswers
-                  ? storedAnswers[index]
-                  : undefined;
-
-                const correctAnswerIndices = question.answers.reduce(
-                  (indices, answer, answerIndex) => {
-                    if (question.correct_answers.includes(answer)) {
-                      indices.push(answerIndex);
-                    }
-                    return indices;
-                  },
-                  []
-                );
-
-                if (
-                  userAnswerIndex !== undefined &&
-                  correctAnswerIndices.includes(userAnswerIndex)
-                ) {
-                  userScore += 1;
-                }
-              });
-
-              const percentageScore = (userScore / totalQuestions) * 100;
-
-              if (percentageScore >= 70) {
-                congratsText.style.display = "block";
-                nextModule.style.display = "block";
-              } else {
-                tryAgain.style.display = "block";
-                failedText.style.display = "block";
-              }
-
-              if (percentageScore < 70) {
-                scoreElement.style.color = "red";
-              }
-
-              scoreElement.textContent = `${Math.floor(percentageScore)}%`;
-            });
-
-            tryAgain.addEventListener("click", (e) => {
-              e.preventDefault();
-
-              // Hide the results and show the quiz
-              quizResult.classList.remove("show");
-              quizContainer.style.display = "block";
-
-              // Iterate through user selections and adjust styles
-              question.answers.forEach((answer, answerIndex) => {
-                const answerItem = answersElement.querySelector(
-                  `li:nth-child(${answerIndex + 1})`
-                );
-                const storedAnswers = getUserAnswers(quizId);
-                const userAnswerIndex = storedAnswers
-                  ? storedAnswers[index]
-                  : undefined;
-                const answerLabel = answerItem.querySelector("label");
-
-                if (userAnswerIndex === answerIndex) {
-                  if (question.correct_answers.includes(answer)) {
-                    answerLabel.classList.add("correct-answer");
-                    answerLabel.classList.remove("incorrect-answer");
-                  } else {
-                    answerLabel.classList.add("incorrect-answer");
-                    answerLabel.classList.remove("correct-answer");
-                  }
-                } else {
-                  answerItem.classList.remove(
-                    "correct-answer",
-                    "incorrect-answer"
-                  );
-                  answerLabel.classList.remove(
-                    "correct-text",
-                    "incorrect-text"
-                  );
-                }
-              });
-            });
-          });
-        }
-      }
-    } else {
-      // Handle the case when user data or token is not available
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-});
-
-function getCookie(cookieName) {
-  const cookies = document.cookie.split("; ");
-  for (const cookie of cookies) {
-    const [name, value] = cookie.split("=");
-    if (name === cookieName) {
-      return value;
-    }
-  }
-  return null;
-}
-
-function storeUserAnswer(quizId, questionIndex, answerIndex) {
-  const storageKey = `userAnswers_${quizId}`;
-  let userAnswers = JSON.parse(localStorage.getItem(storageKey)) || {};
-
-  userAnswers[questionIndex] = answerIndex;
-  localStorage.setItem(storageKey, JSON.stringify(userAnswers));
-}
-
-function getUserAnswers(quizId) {
-  const storageKey = `userAnswers_${quizId}`;
-  return JSON.parse(localStorage.getItem(storageKey));
-}
-
-// Function to retrieve a cookie by name
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-}
-
-// Function to clear a specific cookie
-function clearCookie(name) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
-
-// Function to log out the user and clear cookies
-function logoutUser() {
-  clearCookie("userData");
-  clearCookie("userToken");
-  clearCookie("studyMaterialsData");
-  clearCookie("studyMaterialsByModule");
-  clearCookie("apiData");
-
-  sessionStorage.removeItem("userData");
-  sessionStorage.removeItem("userToken");
-
-  window.location.href = "./index.html"; // Redirect to the login page
-}
+            // Remove active class from "My Courses" button
+            const myCoursesButton =
+              document.getElementById("my_courses_button");
+            myCoursesButton.classList.remove("active");
+          };

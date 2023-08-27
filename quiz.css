@@ -288,4 +288,36 @@
   .quiz_container {
     padding: 2rem 0rem;
   }
+
+  #quiz_results {
+    flex-direction: column;
+    padding: 25px 15px;
+    margin: 10px;
+  }
+
+  #quiz_results .quiz_results_text .success_fail_text {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .quiz_results_details {
+    width: 100%;
+  }
+
+  .quiz_results_details .spans {
+    text-align: center;
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 15px;
+  }
+
+  .quiz_results_details .spans span:last-of-type {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1030px) {
+  #quiz_results {
+    padding: 25px 15px;
+  }
 }

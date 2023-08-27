@@ -235,7 +235,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Store the original content of the payment container
       const originalContent = paymentContainer.innerHTML;
 
+      // Get the course name placeholder element
+      const courseNamePlaceholder = document.getElementById(
+        "course_name_placeholder"
+      );
+
       if (targetCourse) {
+        // Set the course name in the placeholder element
+        courseNamePlaceholder.textContent = targetCourse.course_name;
         for (const [index, module] of targetCourse.course_module.entries()) {
           const numContents = module.lectures.length;
           const moduleCard = document.createElement("div");

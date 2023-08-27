@@ -156,52 +156,66 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Clear any existing cards
             certificateCardsContainer.innerHTML = "";
 
-            // Loop through enrolled courses and create certificate cards
-            result.enrolledcourses.forEach((course) => {
-              const card = document.createElement("div");
-              card.classList.add("certificate_card");
+            // Check if there are certificates available
+            const hasCertificates = result.enrolledcourses.some(
+              (course) => course.certificate
+            );
 
-              // Create and set course image
-              const courseImage = document.createElement("img");
-              courseImage.src = course.course_image_url;
-              card.appendChild(courseImage);
+            if (!hasCertificates) {
+              // If no certificates available, show a message
+              const noCertificatesMessage = document.createElement("p");
+              noCertificatesMessage.classList.add("noCertTooltip")
+              noCertificatesMessage.textContent =
+                "No certificates available at the moment.";
+              certificateCardsContainer.appendChild(noCertificatesMessage);
+            } else {
+              // Loop through enrolled courses and create certificate cards
+              result.enrolledcourses.forEach((course) => {
+                const card = document.createElement("div");
+                card.classList.add("certificate_card");
 
-              // Create and set course name
-              const courseName = document.createElement("h4");
-              courseName.textContent = course.course_name;
-              courseName.classList.add("certificate_card_course_title");
-              // card.appendChild(courseName);
+                // Create and set course image
+                const courseImage = document.createElement("img");
+                courseImage.src = course.course_image_url;
+                card.appendChild(courseImage);
 
-              // Create and set text for successfully completed
-              const completedText = document.createElement("p");
-              completedText.textContent = "Successfully Completed";
-              // card.appendChild(completedText);
+                // Create and set course name
+                const courseName = document.createElement("h4");
+                courseName.textContent = course.course_name;
+                courseName.classList.add("certificate_card_course_title");
+                // card.appendChild(courseName);
 
-              const course_cert_details = document.createElement("div");
-              course_cert_details.appendChild(courseName);
-              course_cert_details.appendChild(completedText);
+                // Create and set text for successfully completed
+                const completedText = document.createElement("p");
+                completedText.textContent = "Successfully Completed";
+                // card.appendChild(completedText);
 
-              // Create button
-              const viewButton = document.createElement("button");
-              viewButton.classList.add("view");
-              viewButton.textContent = "View";
-              viewButton.addEventListener("click", () => {
-                // Show certificate modal with course details
-                showCertificateModal(course);
+                const course_cert_details = document.createElement("div");
+                course_cert_details.appendChild(courseName);
+                course_cert_details.appendChild(completedText);
+
+                // Create button
+                const viewButton = document.createElement("button");
+                viewButton.classList.add("view");
+                viewButton.textContent = "View";
+                viewButton.addEventListener("click", () => {
+                  // Show certificate modal with course details
+                  showCertificateModal(course);
+                });
+
+                const course_cert_details_container =
+                  document.createElement("div");
+                course_cert_details_container.classList.add(
+                  "course_cert_details_container"
+                );
+                course_cert_details_container.appendChild(course_cert_details);
+                course_cert_details_container.appendChild(viewButton);
+                card.appendChild(course_cert_details_container);
+
+                // Append card to container
+                certificateCardsContainer.appendChild(card);
               });
-
-              const course_cert_details_container =
-                document.createElement("div");
-              course_cert_details_container.classList.add(
-                "course_cert_details_container"
-              );
-              course_cert_details_container.appendChild(course_cert_details);
-              course_cert_details_container.appendChild(viewButton);
-              card.appendChild(course_cert_details_container);
-
-              // Append card to container
-              certificateCardsContainer.appendChild(card);
-            });
+            }
 
             certificateCardsContainer.style.display = "block";
             certificateCardsContainer.classList.add(
