@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const courseId = urlParams.get("courseid");
       const moduleId = urlParams.get("moduleid");
+      const teachable_course_id = urlParams.get("teachableid");
 
       const targetCourse = result.enrolledcourses.find(
         (course) => course.id === parseInt(courseId)
@@ -191,10 +192,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                   attachmentInfo.addEventListener("click", () => {
                     const courseId = urlParams.get("courseid");
                     const moduleId = urlParams.get("moduleid");
+                    const teachable_course_id = urlParams.get("teachableid");
                     const quizId = attachment.id; // Assuming the attachment has an ID property
                     localStorage.setItem(attachmentStateKey, "opened");
 
-                    const quizUrl = `quiz.html?courseid=${courseId}&moduleid=${moduleId}&quizid=${quizId}`;
+                    const quizUrl = `quiz.html?courseid=${courseId}&teachableid=${teachable_course_id}&moduleid=${moduleId}&quizid=${quizId}`;
                     window.location.href = quizUrl; // Navigate to the constructed quiz URL
                   });
                 } else if (attachment.kind === "video") {

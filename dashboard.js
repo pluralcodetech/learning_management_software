@@ -110,8 +110,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             const detailsButton = document.createElement("button");
             detailsButton.innerHTML = `<span>Continue Learning <span><i class='bx bx-right-arrow-alt'></i></span></span>`;
             detailsButton.addEventListener("click", () => {
-              // Redirect to course details page with course ID
-              window.location.href = `my-courses.html?courseid=${course.id}`;
+              console.log(course.teachable_course_id);
+              setTimeout(() => {
+                // Redirect to course details page with course ID
+                window.location.href = `my-courses.html?courseid=${course.id}&teachableid=${course.teachable_course_id}`;
+              }, 3000);
             });
             card.appendChild(detailsButton);
 
@@ -164,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!hasCertificates) {
               // If no certificates available, show a message
               const noCertificatesMessage = document.createElement("p");
-              noCertificatesMessage.classList.add("noCertTooltip")
+              noCertificatesMessage.classList.add("noCertTooltip");
               noCertificatesMessage.textContent =
                 "No certificates available at the moment.";
               certificateCardsContainer.appendChild(noCertificatesMessage);

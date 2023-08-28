@@ -372,8 +372,11 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
+const urlParams = new URLSearchParams(window.location.search);
+const teachable_course_id = urlParams.get("teachableid");
+
 function redirectToVideoCourse(courseId, moduleId) {
-  window.location.href = `video-course.html?courseid=${courseId}&moduleid=${moduleId}`;
+  window.location.href = `video-course.html?courseid=${courseId}&moduleid=${moduleId}&teachableid=${teachable_course_id}`;
 }
 
 function getCookie(name) {

@@ -16,9 +16,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const courseId = urlParams.get("courseid");
     const moduleId = urlParams.get("moduleid");
     const quizId = urlParams.get("quizid");
+    const teachable_course_id = urlParams.get("teachableid");
     console.log("Course ID", courseId);
     console.log("Module ID", moduleId);
     console.log("Quiz ID", quizId);
+    console.log("Teachable ID", quizId);
 
     const userToken = getCookie("userToken");
     console.log(userToken);
@@ -282,7 +284,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                       // Redirect the user back to the my-courses.html page with the updated courseid parameter
                       setTimeout(() => {
+                        // Save the next module ID to local storage
+                        // localStorage.setItem("nextModuleId", nextModule.id);
+
                         window.location.href = `my-courses.html?courseid=${courseId}`;
+                        console.log("Done");
+                        console.log(nextModule.id);
+                        console.log(teachable_course_id);
+                        console.log(userScore);
                       }, 10000);
                     } else {
                       console.log("No next module available.");
@@ -332,7 +341,6 @@ function getUserAnswers(quizId) {
   const storageKey = `userAnswers_${quizId}`;
   return JSON.parse(localStorage.getItem(storageKey));
 }
-
 async function unlockNextModule(userScore) {
   const apiUrl =
     "https://backend.pluralcode.institute/student/unlock-loop-module";
@@ -350,8 +358,10 @@ async function unlockNextModule(userScore) {
 
   // Retrieve course and module IDs from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
-  const courseId = urlParams.get("courseid");
-  const moduleId = urlParams.get("moduleid");
+  const courseId = urlParams.get("teachableid");
+
+  // Retrieve moduleId from local storage
+  const moduleId = localStorage.getItem("nextModule");
 
   const requestBody = JSON.stringify({
     course_id: courseId,
