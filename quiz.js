@@ -234,6 +234,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
               });
             });
+            
             //Next Module
             const nextModuleButton = document.getElementById("next_module");
 
@@ -250,6 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     moduleId,
                     userScore
                   );
+                  console.log(moduleId)
 
                   // After successfully unlocking the next module
                   if (
@@ -287,7 +289,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         // Save the next module ID to local storage
                         // localStorage.setItem("nextModuleId", nextModule.id);
 
-                        window.location.href = `my-courses.html?courseid=${courseId}`;
+                        // window.location.href = `my-courses.html?courseid=${courseId}`;
                         console.log("Done");
                         console.log(nextModule.id);
                         console.log(teachable_course_id);

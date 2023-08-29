@@ -167,35 +167,32 @@ document.addEventListener("DOMContentLoaded", async () => {
                 let label = "";
                 let icon = "";
 
+                const attachmentStateKey = `${moduleKey}_${attachment.id}`; // Define attachmentStateKey
+
                 if (attachment.kind === "quiz") {
                   label = "Practice Questions";
                   icon = "<i class='bx bx-book'></i>";
-                  // Get the position from the lecture object
-                  attachment.position = lecture.position;
 
-                  attachmentInfo.classList.add("locked"); // Apply fading and disable pointer events
-
-                  setTimeout(() => {
-                    attachmentInfo.classList.remove("locked");
-                  }, 600000); //
-
-                  // Load attachment state from localStorage
-                  const attachmentStateKey = `${moduleKey}`;
+                  // Check if the attachment is marked as "opened" in local storage
                   const savedAttachmentState =
                     localStorage.getItem(attachmentStateKey);
-
                   if (savedAttachmentState === "opened") {
-                    attachmentInfo.classList.remove("locked"); // Unlock opened attachments
+                    icon = "<i class='bx bx-check-circle'></i>";
                   }
 
-                  // Add click event listener for quiz attachment
                   attachmentInfo.addEventListener("click", () => {
                     const courseId = urlParams.get("courseid");
                     const moduleId = urlParams.get("moduleid");
                     const teachable_course_id = urlParams.get("teachableid");
                     const quizId = attachment.id; // Assuming the attachment has an ID property
                     localStorage.setItem(attachmentStateKey, "opened");
-
+                    attachmentInfo.innerHTML = `
+                      <i class='bx bx-check-circle'></i>
+                      <div>
+                        <span><b>${label}: ${capitalizedLectureName}</b></span>
+                        <p>Module Content: ${lecturePosition}</p>
+                      </div>
+                    `;
                     const quizUrl = `quiz.html?courseid=${courseId}&teachableid=${teachable_course_id}&moduleid=${moduleId}&quizid=${quizId}`;
                     window.location.href = quizUrl; // Navigate to the constructed quiz URL
                   });
@@ -209,9 +206,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     localStorage.getItem(attachmentStateKey);
 
                   if (savedAttachmentState === "opened") {
-                    attachmentInfo.classList.remove("locked"); // Unlock opened attachments
                     icon = "<i class='bx bx-check-circle'></i>";
                   }
+
                   // Add click event listener for video attachment
                   attachmentInfo.addEventListener("click", () => {
                     pdfContainer.style.display = "none";
@@ -230,25 +227,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                     sourceWebm.setAttribute("src", videoUrl);
 
                     videoPlayer.load();
-                    videoPlayer.play();
 
-                    // Set the videoClicked variable to true
-                    videoClicked = true;
-
-                    // Change the icon after 8 seconds
-                    setTimeout(() => {
-                      if (videoClicked) {
-                        localStorage.setItem(attachmentStateKey, "opened");
-                        icon = "<i class='bx bx-check-circle'></i>";
-                        attachmentInfo.innerHTML = `
-                      ${icon}
+                    // Change the icon to a checkmark
+                    attachmentInfo.innerHTML = `
+                      <i class='bx bx-check-circle'></i>
                       <div>
                         <span><b>${label}: ${capitalizedLectureName}</b></span>
                         <p>Module Content: ${lecturePosition}</p>
                       </div>
                     `;
-                      }
-                    }, 180000);
+
+                    // Save the attachment state as "opened" in local storage
+                    localStorage.setItem(attachmentStateKey, "opened");
+
+                    // Automatically start playing the video if there's saved progress
+                    const savedProgressKey = `video_progress_${courseId}_${moduleId}_${lecture.position}`;
+                    const savedProgress =
+                      localStorage.getItem(savedProgressKey);
+
+                    if (savedProgress) {
+                      videoPlayer.currentTime = parseFloat(savedProgress);
+                      videoPlayer.play(); // Automatically start playing
+                    }
+
                     // Listen for time updates while the video is playing
                     videoPlayer.addEventListener("timeupdate", () => {
                       // Save the current progress in local storage
@@ -258,34 +259,33 @@ document.addEventListener("DOMContentLoaded", async () => {
                       );
                     });
                   });
-                  // Restore saved video progress if available
-                  const savedProgressKey = `video_progress_${courseId}_${moduleId}_${lecture.position}`;
-                  const savedProgress = localStorage.getItem(savedProgressKey);
 
-                  if (savedProgress) {
-                    // Update the video progress to the saved value
-                    videoPlayer.currentTime = parseFloat(savedProgress);
+                  // Automatically start playing the video if there's saved progress
+                  if (
+                    savedAttachmentState === "opened" &&
+                    videoPlayer.currentTime > 0
+                  ) {
+                    videoPlayer.load();
+                    videoPlayer.play();
+                  } else {
+                    // If no saved progress, but the video was opened before, load the video
+                    if (savedAttachmentState === "opened") {
+                      videoPlayer.load();
+                    }
                   }
-                } else if (attachment.kind === "pdf_embed") {
+                }
+
+                // ... (rest of the code)
+                else if (attachment.kind === "pdf_embed") {
                   label = "PDF";
                   icon = "<i class='bx bx-file'></i>";
 
-                  // Load attachment state from localStorage
-                  const attachmentStateKey = `${moduleKey}`;
+                  // Check if the attachment is marked as "opened" in local storage
                   const savedAttachmentState =
                     localStorage.getItem(attachmentStateKey);
-
                   if (savedAttachmentState === "opened") {
                     icon = "<i class='bx bx-check-circle'></i>";
-                    attachmentInfo.classList.remove("locked"); // Unlock opened attachments
-                  } else {
-                    attachmentInfo.classList.add("locked"); // Apply fading and disable pointer events
                   }
-
-                  // Remove faded and disabled classes
-                  setTimeout(() => {
-                    attachmentInfo.classList.remove("locked");
-                  }, 300000);
 
                   attachmentInfo.addEventListener("click", () => {
                     videoPlayer.style.display = "none";
@@ -300,25 +300,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     objectTag.setAttribute("data", pdfUrl);
                     iframeTag.setAttribute("src", pdfUrl);
 
-                    // Set the pdfClicked variable to true
-                    pdfClicked = true;
-
-                    // Change the icon after 5 seconds
-                    setTimeout(() => {
-                      if (pdfClicked) {
-                        localStorage.setItem(attachmentStateKey, "opened");
-                        icon = "<i class='bx bx-check-circle'></i>";
-                        attachmentInfo.innerHTML = `
-                          ${icon}
-                          <div>
-                            <span><b>${label}: ${capitalizedLectureName}</b></span>
-                            <p>Module Content: ${lecturePosition}</p>
-                          </div>
-                        `;
-                      }
-                    }, 5000);
+                    localStorage.setItem(attachmentStateKey, "opened");
+                    attachmentInfo.innerHTML = `
+                      <i class='bx bx-check-circle'></i>
+                      <div>
+                        <span><b>${label}: ${capitalizedLectureName}</b></span>
+                        <p>Module Content: ${lecturePosition}</p>
+                      </div>
+                    `;
                   });
                 }
+
                 // Capitalize the first letter of each word in lecture name
                 const lectureNameWords = lecture.name.split(" ");
                 const lecturePosition = lecture.position;
