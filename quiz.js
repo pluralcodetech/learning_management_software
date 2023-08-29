@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  // Logout
+  const logoutButton = document.getElementById("logout_button"); // Replace with the actual ID of your logout button/link
+
+  logoutButton.addEventListener("click", () => {
+    logoutUser();
+  });
+  //setting the goback button to mimic the browser history button
   const goBackLink = document.getElementById("goBackLink");
 
   goBackLink.addEventListener("click", (event) => {
@@ -6,12 +13,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.back();
   });
 
+  // getting the button element
   const submitButton = document.getElementById("submitQuiz");
   submitButton.classList.add("locked"); // Initially lock the button
   submitButton.style.color = "#f5f6fa";
   submitButton.style.backgroundColor = "#f8991d";
 
   try {
+    // getting the teachable_course_id from the url
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get("courseid");
     const moduleId = urlParams.get("moduleid");
@@ -20,8 +29,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Course ID", courseId);
     console.log("Module ID", moduleId);
     console.log("Quiz ID", quizId);
-    console.log("Teachable ID", quizId);
+    console.log("Teachable ID", teachable_course_id);
 
+    // getting user token , data and main dashboard data
     const userToken = getCookie("userToken");
     console.log(userToken);
 
@@ -32,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(mainData);
 
     if (userData && userToken) {
+      // if user toekn and data is present populate the user profile in the dashboard header
       const profileName = document.querySelector(".user_name");
       const studentId = document.querySelector(".student_id");
       const initials = document.querySelector(".initials span");
@@ -49,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         localStorage.getItem("studyMaterialsForCurrentModule")
       );
       console.log(
-        "Study Materials Data (LocalStorage):",
+        "Study Materials Data For Current Module (LocalStorage):",
         studyMaterialsDataLocalStorage
       );
 
@@ -59,8 +70,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
 
       if (quizData && quizData.lecture.attachments) {
-        const quizContainer = document.querySelector(".quiz_container");
-
         const quizAttachment = quizData.lecture.attachments.find(
           (attachment) => attachment.kind === "quiz"
         );
@@ -70,6 +79,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (quizAttachment && quizQuestions) {
           const quizContainer = document.getElementById("quiz_container");
           const quizResult = document.getElementById("quiz_results");
+
+          // loop through the questions attachment and render the questions
           quizQuestions.forEach((question, index) => {
             const questionElement = document.createElement("div");
             questionElement.classList.add("quiz_main_question");
@@ -90,6 +101,13 @@ document.addEventListener("DOMContentLoaded", async () => {
               radioInput.addEventListener("change", () => {
                 // Store the user's answer selection in localStorage
                 storeUserAnswer(quizId, index, answerIndex);
+
+                // Enable or disable the submit button based on answers
+                if (allQuestionsAnswered) {
+                  submitButton.classList.remove("locked");
+                } else {
+                  submitButton.classList.add("locked");
+                }
               });
 
               // Retrieve user's answer selection from localStorage
@@ -109,14 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
               );
 
-              console.log(allQuestionsAnswered);
-
-              // Enable or disable the submit button based on answers
-              if (allQuestionsAnswered) {
-                submitButton.classList.remove("locked");
-              } else {
-                submitButton.classList.add("locked");
-              }
+              console.log("all Questions answered", allQuestionsAnswered);
 
               answerItem.appendChild(radioInput);
               answerItem.appendChild(answerLabel);
@@ -234,7 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
               });
             });
-            
+
             //Next Module
             const nextModuleButton = document.getElementById("next_module");
 
@@ -251,7 +262,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     moduleId,
                     userScore
                   );
-                  console.log(moduleId)
+                  console.log(moduleId);
 
                   // After successfully unlocking the next module
                   if (
@@ -291,6 +302,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         // window.location.href = `my-courses.html?courseid=${courseId}`;
                         console.log("Done");
+                        console.log(moduleId);
+                        console.log(courseId);
                         console.log(nextModule.id);
                         console.log(teachable_course_id);
                         console.log(userScore);
@@ -411,4 +424,24 @@ function calculateUserScore(quizQuestions, quizId) {
 
   const percentageScore = (userScore / totalQuestions) * 100;
   return Math.floor(percentageScore);
+}
+
+function logoutUser() {
+  // Clear cookies (if used)
+  clearCookie("userData");
+  clearCookie("userToken");
+  clearCookie("studyMaterialsData");
+  clearCookie("studyMaterialsByModule");
+  clearCookie("apiData");
+
+  sessionStorage.removeItem("userData");
+  sessionStorage.removeItem("userToken");
+
+  // Redirect to the login page
+  window.location.href = "./index.html"; // Replace with the actual URL of your login page
+}
+
+// Clear a specific cookie by setting its expiration in the past
+function clearCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }

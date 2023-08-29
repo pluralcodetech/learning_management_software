@@ -151,6 +151,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           const urlParams = new URLSearchParams(window.location.search);
           const moduleId = urlParams.get("moduleid");
 
+          // // Function to calculate progress percentage
+          // function calculateProgress(openedMilestones, totalMilestones) {
+          //   return (openedMilestones / totalMilestones) * 100;
+          // }
+
+          let clickedMilestones = 0; // Define the clickedMilestones variable
+          const totalMilestones = sortedMilestones.length; // Define the totalMilestones variable
+
           sortedMilestones.forEach((milestone, index) => {
             const milestoneElement = document.createElement("div");
             milestoneElement.classList.add("milestone_navigation");
@@ -176,6 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   // Check if the attachment is marked as "opened" in local storage
                   const savedAttachmentState =
                     localStorage.getItem(attachmentStateKey);
+
                   if (savedAttachmentState === "opened") {
                     icon = "<i class='bx bx-check-circle'></i>";
                   }
@@ -185,7 +194,40 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const moduleId = urlParams.get("moduleid");
                     const teachable_course_id = urlParams.get("teachableid");
                     const quizId = attachment.id; // Assuming the attachment has an ID property
-                    localStorage.setItem(attachmentStateKey, "opened");
+
+                    // Check if the milestone is clicked for the first time
+                    if (!savedAttachmentState) {
+                      localStorage.setItem(attachmentStateKey, "opened");
+
+                      // Calculate the expiration date (one year from now)
+                      const expirationDate = new Date();
+                      expirationDate.setFullYear(
+                        expirationDate.getFullYear() + 1
+                      );
+
+                      // Save the expiration date in the local storage
+                      localStorage.setItem(
+                        `${attachmentStateKey}_expiration`,
+                        expirationDate.getTime()
+                      );
+
+                      // Increment the clickedMilestones count
+                      clickedMilestones++;
+
+                      // Calculate the progress percentage based on clickedMilestones and totalMilestones
+                      const progressPercentage =
+                        (clickedMilestones / totalMilestones) * 100;
+
+                      // Update the progress using the API
+                      updateProgressToAPI(
+                        progressPercentage,
+                        moduleId,
+                        teachable_course_id,
+                        targetCourse.enrollment_source,
+                        userToken
+                      );
+                    }
+
                     attachmentInfo.innerHTML = `
                       <i class='bx bx-check-circle'></i>
                       <div>
@@ -193,15 +235,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <p>Module Content: ${lecturePosition}</p>
                       </div>
                     `;
+
                     const quizUrl = `quiz.html?courseid=${courseId}&teachableid=${teachable_course_id}&moduleid=${moduleId}&quizid=${quizId}`;
-                    window.location.href = quizUrl; // Navigate to the constructed quiz URL
+
+                    // Delay the redirection by 10 seconds
+                    setTimeout(() => {
+                      window.location.href = quizUrl; // Navigate to the constructed quiz URL
+                    }, 10000); // 10000 milliseconds (10 seconds)
                   });
                 } else if (attachment.kind === "video") {
                   label = "Video";
                   icon = "<i class='bx bx-play'></i>";
 
                   // Load attachment state from localStorage
-                  const attachmentStateKey = `${moduleKey}`;
+                  const attachmentStateKey = `${moduleKey}_${attachment.id}`;
                   const savedAttachmentState =
                     localStorage.getItem(attachmentStateKey);
 
@@ -210,7 +257,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   }
 
                   // Add click event listener for video attachment
-                  attachmentInfo.addEventListener("click", () => {
+                  attachmentInfo.addEventListener("click", async () => {
                     pdfContainer.style.display = "none";
                     videoPlayer.style.display = "block";
                     tooltip.style.display = "none";
@@ -258,6 +305,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                         videoPlayer.currentTime
                       );
                     });
+
+                    // Check if the milestone is clicked for the first time
+                    if (!savedAttachmentState) {
+                      // Mark the attachment as opened
+                      localStorage.setItem(attachmentStateKey, "opened");
+
+                      // Increment the clickedMilestones count
+                      clickedMilestones++;
+
+                      // Calculate the progress percentage based on clickedMilestones and totalMilestones
+                      const progressPercentage =
+                        (clickedMilestones / totalMilestones) * 100;
+
+                      // Update the progress using the API after a delay
+
+                      await updateProgressToAPI(
+                        progressPercentage,
+                        moduleId,
+                        teachable_course_id,
+                        targetCourse.enrollment_source,
+                        userToken
+                      );
+                    }
                   });
 
                   // Automatically start playing the video if there's saved progress
@@ -273,16 +343,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                       videoPlayer.load();
                     }
                   }
-                }
-
-                // ... (rest of the code)
-                else if (attachment.kind === "pdf_embed") {
+                } else if (attachment.kind === "pdf_embed") {
                   label = "PDF";
                   icon = "<i class='bx bx-file'></i>";
 
                   // Check if the attachment is marked as "opened" in local storage
                   const savedAttachmentState =
                     localStorage.getItem(attachmentStateKey);
+
                   if (savedAttachmentState === "opened") {
                     icon = "<i class='bx bx-check-circle'></i>";
                   }
@@ -300,7 +368,28 @@ document.addEventListener("DOMContentLoaded", async () => {
                     objectTag.setAttribute("data", pdfUrl);
                     iframeTag.setAttribute("src", pdfUrl);
 
-                    localStorage.setItem(attachmentStateKey, "opened");
+                    // Check if the milestone is clicked for the first time
+                    if (!savedAttachmentState) {
+                      // Mark the attachment as opened
+                      localStorage.setItem(attachmentStateKey, "opened");
+
+                      // Increment the clickedMilestones count
+                      clickedMilestones++;
+
+                      // Calculate the progress percentage based on clickedMilestones and totalMilestones
+                      const progressPercentage =
+                        (clickedMilestones / totalMilestones) * 100;
+
+                      // Update the progress using the API
+                      updateProgressToAPI(
+                        progressPercentage,
+                        moduleId,
+                        teachable_course_id,
+                        userToken,
+                        (course_type = targetCourse.enrollment_source)
+                      );
+                    }
+
                     attachmentInfo.innerHTML = `
                       <i class='bx bx-check-circle'></i>
                       <div>
@@ -380,5 +469,43 @@ async function fetchStudyMaterialsData(teachableCourseId, lectures, userData) {
   } catch (error) {
     console.error("Error fetching study materials data:", error);
     throw error;
+  }
+}
+
+// Function to update progress to the API
+async function updateProgressToAPI(
+  percentage,
+  moduleId,
+  teachableCourseId,
+  course_type = "loop_form"
+) {
+  const apiEndpoint =
+    "https://backend.pluralcode.institute/student/track-module-progress";
+  const userToken = getCookie("userToken"); // Get the userToken from the cookie
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${userToken}`); // Include the bearer token
+
+  const requestBody = JSON.stringify({
+    percentage: percentage.toFixed(2),
+    module_id: moduleId,
+    teachable_course_id: teachableCourseId,
+    course_type: "loop_form",
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: requestBody,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(apiEndpoint, requestOptions);
+    const result = await response.json();
+    console.log("API Result:", result.message);
+  } catch (error) {
+    console.error("Error updating progress:", error);
   }
 }
