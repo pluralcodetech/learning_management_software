@@ -256,6 +256,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             moduleCard.classList.add("locked"); // Add a class to style locked modules
           }
 
+          // Calculate the width of the progress bar
+          const progressBarWidth =
+            module.percentage >= 99 ? "100%" : `${module.percentage}%`;
+
+          // Check if the module.percentage is greater than zero
+          const showProgressBar = module.percentage > 0;
+
           moduleCard.innerHTML = `
               <div class="module_container">
                 <div class="module_details">
@@ -272,7 +279,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <h5><i class='bx bx-book-content'></i> ${numContents} content${
             numContents !== 1 ? "s" : ""
           }</h5>
+           <!-- Check if the module.percentage is greater than zero -->
+        ${
+          showProgressBar
+            ? `
+        <!-- Add the progress bar element -->
+        <div class="progress_bar">
+          <div class="progress_bar_fill" style="width: ${progressBarWidth}"></div>
+        </div>`
+            : ""
+        }
+          
                     </div>
+      
                 </div>
                 <div class="module_nextup">
                     <span>Next up</span>
