@@ -62,23 +62,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         (course) => course.id === parseInt(courseId)
       );
 
-      const nextModuleId = localStorage.getItem("nextModule");
-
-      // Wait for the module cards to load before accessing them
-      window.addEventListener("load", () => {
-        const nextModuleCard = document.querySelector(
-          `[data-module-id="${nextModuleId}"]`
-        );
-
-        if (nextModuleCard) {
-          // Enable the next module by removing the "locked" class or any other relevant changes
-          // For example:
-          nextModuleCard.classList.remove("locked");
-        } else {
-          console.log("Next module card not found.");
-        }
-      });
-
       const modulesContainer = document.querySelector(".module_containers");
 
       // Get the elements
@@ -336,6 +319,69 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             modulesContainer.appendChild(moduleCard);
+
+            // Check if the quizCompleted flag is set in localStorage
+            const quizCompletedFlag = localStorage.getItem("quizCompleted");
+
+            if (quizCompletedFlag === "true") {
+              // Remove the quizCompleted flag
+              localStorage.removeItem("quizCompleted");
+
+              // Find the next locked module
+              const nextLockedModule = targetCourse.course_module.find(
+                (module) => !module.unlockedstatus
+              );
+
+              if (nextLockedModule) {
+                const unlockModuleAPIUrl =
+                  "https://backend.pluralcode.institute/student/unlock-loop-module";
+                const userScore = JSON.parse(localStorage.getItem("userScore"));
+                const nextModuleId = nextLockedModule.id;
+                const teachableCourseId = targetCourse.teachable_course_id; // Use teachable_course_id from the API result
+                const userToken = getCookie("userToken"); // Get userToken from cookies
+
+                // Create the request body
+                const requestBody = {
+                  course_id: teachableCourseId,
+                  module_id: nextModuleId,
+                  quizscore: userScore,
+                };
+
+                // Prepare headers and options for the fetch request
+                const headers = new Headers();
+                headers.append("Content-Type", "application/json");
+                headers.append("Authorization", `Bearer ${userToken}`); // Add the userToken to headers
+
+                const requestOptions = {
+                  method: "POST",
+                  headers: headers,
+                  body: JSON.stringify(requestBody),
+                  redirect: "follow",
+                };
+
+                // Make the API call to unlock the next module
+                fetch(unlockModuleAPIUrl, requestOptions)
+                  .then((response) => response.json())
+                  .then((result) => {
+                    if (
+                      result.message === "congratulations next module unlocked"
+                    ) {
+                      console.log("Next module unlocked successfully!");
+                      // You can update UI or perform any other actions here
+                      // Get the next module card by its ID and remove the "locked" class
+                      const nextModuleCard = document.querySelector(
+                        `[data-module-id="${nextModuleId}"]`
+                      );
+                      if (nextModuleCard) {
+                        nextModuleCard.classList.remove("locked");
+                      }
+                    }
+                  })
+                  .catch((error) =>
+                    console.error("Error unlocking next module:", error)
+                  );
+              }
+            }
           } catch (error) {
             console.error(
               "An error occurred while fetching study materials:",

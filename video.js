@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // Delay the redirection by 10 seconds
                     setTimeout(() => {
                       window.location.href = quizUrl; // Navigate to the constructed quiz URL
-                    }, 10000); // 10000 milliseconds (10 seconds)
+                    }, 3000); // 10000 milliseconds (10 seconds)
                   });
                 } else if (attachment.kind === "video") {
                   label = "Video";

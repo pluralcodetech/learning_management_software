@@ -98,9 +98,17 @@ document.addEventListener("DOMContentLoaded", async () => {
               radioInput.type = "radio";
               radioInput.name = `question_${index}`;
               radioInput.value = answerIndex; // Store the index of the selected answer
+
               radioInput.addEventListener("change", () => {
-                // Store the user's answer selection in localStorage
                 storeUserAnswer(quizId, index, answerIndex);
+
+                // Check if all questions have been answered
+                const allQuestionsAnswered = quizQuestions.every(
+                  (question, idx) => {
+                    const stored = getUserAnswers(quizId);
+                    return stored && stored[idx] !== undefined;
+                  }
+                );
 
                 // Enable or disable the submit button based on answers
                 if (allQuestionsAnswered) {
@@ -112,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
               // Retrieve user's answer selection from localStorage
               const storedAnswers = getUserAnswers(quizId);
-              if (storedAnswers && storedAnswers[index] === answerIndex) {
+              if (storedAnswers && storedAnswers[index] !== answerIndex) {
                 radioInput.checked = true; // Set the radio button as selected
               }
 
@@ -126,6 +134,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                   return stored && stored[idx] !== undefined;
                 }
               );
+
+              // Enable or disable the submit button based on answers
+              if (allQuestionsAnswered) {
+                submitButton.classList.remove("locked");
+              } else {
+                submitButton.classList.add("locked");
+              }
 
               console.log("all Questions answered", allQuestionsAnswered);
 
@@ -245,78 +260,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
               });
             });
-
             //Next Module
             const nextModuleButton = document.getElementById("next_module");
 
-            nextModuleButton.addEventListener("click", async () => {
+            nextModuleButton.addEventListener("click", () => {
               try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const quizId = urlParams.get("quizid");
+                // Calculate the user's score
                 const userScore = calculateUserScore(quizQuestions, quizId);
 
-                if (userScore >= 70) {
-                  // Unlock the next module using the API
-                  const unlockResult = await unlockNextModule(
-                    courseId,
-                    moduleId,
-                    userScore
-                  );
-                  console.log(moduleId);
+                // Set the flag indicating quiz completion
+                localStorage.setItem("quizCompleted", "true");
 
-                  // After successfully unlocking the next module
-                  if (
-                    unlockResult.message ===
-                    "congratulations next module unlocked"
-                  ) {
-                    // Handle the successful unlocking of the next module
-                    console.log("Next module unlocked successfully!");
+                // Get the current timestamp and add one year in milliseconds
+                const expirationDate = new Date();
+                expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
-                    // Store the unlocked module ID in localStorage
-                    localStorage.setItem("unlockedModuleId", moduleId);
+                const urlParams = new URLSearchParams(window.location.search);
+                const courseId = urlParams.get("courseid"); // Use the course ID
 
-                    // Find the index of the unlocked module in the course_module array
-                    const unlockedModuleIndex =
-                      mainData.enrolledcourses[0].course_module.findIndex(
-                        (module) => module.id === parseInt(moduleId)
-                      );
+                // Create a unique key using the course ID and quiz ID
+                const storageKey = `userScore_${courseId}_${quizId}`;
 
-                    if (
-                      unlockedModuleIndex !== -1 &&
-                      unlockedModuleIndex <
-                        mainData.enrolledcourses[0].course_module.length - 1
-                    ) {
-                      // Get the next module
-                      const nextModule =
-                        mainData.enrolledcourses[0].course_module[
-                          unlockedModuleIndex + 1
-                        ];
+                // Save the user's score and expiration date in local storage
+                const scoreData = {
+                  userScore: userScore,
+                  quizId: quizId,
+                  expirationDate: expirationDate.getTime(),
+                };
+                localStorage.setItem(storageKey, JSON.stringify(scoreData));
 
-                      // Store the ID of the next module in localStorage
-                      localStorage.setItem("nextModule", nextModule.id);
-
-                      // Redirect the user back to the my-courses.html page with the updated courseid parameter
-                      setTimeout(() => {
-                        // Save the next module ID to local storage
-                        // localStorage.setItem("nextModuleId", nextModule.id);
-
-                        // window.location.href = `my-courses.html?courseid=${courseId}`;
-                        console.log("Done");
-                        console.log(moduleId);
-                        console.log(courseId);
-                        console.log(nextModule.id);
-                        console.log(teachable_course_id);
-                        console.log(userScore);
-                      }, 10000);
-                    } else {
-                      console.log("No next module available.");
-                    }
-                  }
-                } else {
-                  console.log(
-                    "User's score is below 70. Cannot unlock the next module."
-                  );
-                }
+                // Redirect the user to the my-courses.html page with the current course ID
+                window.location.href = `my-courses.html?courseid=${courseId}`;
               } catch (error) {
                 console.error("Error:", error);
               }
@@ -356,7 +330,9 @@ function getUserAnswers(quizId) {
   const storageKey = `userAnswers_${quizId}`;
   return JSON.parse(localStorage.getItem(storageKey));
 }
-async function unlockNextModule(userScore) {
+
+// Function to unlock the next module using the API
+async function unlockNextModule(payload) {
   const apiUrl =
     "https://backend.pluralcode.institute/student/unlock-loop-module";
   const myHeaders = new Headers();
@@ -371,23 +347,10 @@ async function unlockNextModule(userScore) {
 
   myHeaders.append("Authorization", `Bearer ${userToken}`);
 
-  // Retrieve course and module IDs from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const courseId = urlParams.get("teachableid");
-
-  // Retrieve moduleId from local storage
-  const moduleId = localStorage.getItem("nextModule");
-
-  const requestBody = JSON.stringify({
-    course_id: courseId,
-    module_id: moduleId,
-    quizscore: userScore,
-  });
-
   const requestOptions = {
     method: "POST",
     headers: myHeaders,
-    body: requestBody,
+    body: JSON.stringify(payload),
     redirect: "follow",
   };
 
