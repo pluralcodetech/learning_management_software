@@ -151,11 +151,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const urlParams = new URLSearchParams(window.location.search);
           const moduleId = urlParams.get("moduleid");
 
-          // // Function to calculate progress percentage
-          // function calculateProgress(openedMilestones, totalMilestones) {
-          //   return (openedMilestones / totalMilestones) * 100;
-          // }
-
           let clickedMilestones = 0; // Define the clickedMilestones variable
           const totalMilestones = sortedMilestones.length; // Define the totalMilestones variable
 
@@ -241,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // Delay the redirection by 10 seconds
                     setTimeout(() => {
                       window.location.href = quizUrl; // Navigate to the constructed quiz URL
-                    }, 3000); // 10000 milliseconds (10 seconds)
+                    }, 2000);
                   });
                 } else if (attachment.kind === "video") {
                   label = "Video";
@@ -477,7 +472,7 @@ async function updateProgressToAPI(
   percentage,
   moduleId,
   teachableCourseId,
-  course_type = "loop_form"
+  courseType
 ) {
   const apiEndpoint =
     "https://backend.pluralcode.institute/student/track-module-progress";
@@ -491,7 +486,7 @@ async function updateProgressToAPI(
     percentage: percentage.toFixed(2),
     module_id: moduleId,
     teachable_course_id: teachableCourseId,
-    course_type: "loop_form",
+    course_type: courseType,
   });
 
   const requestOptions = {

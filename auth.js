@@ -30,10 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Verification code sent to your email.");
 
         // Save the hashnode in sessionStorage
-        sessionStorage.setItem("hashnode", result.encrypted_data);
+        localStorage.setItem("hashnode", result.encrypted_data);
 
         // After getting the user's email from the form
-        sessionStorage.setItem("userEmail", userEmail);
+        localStorage.setItem("userEmail", userEmail);
 
         // Redirect to the OTP input page
         window.location.href = "./email_code.html";

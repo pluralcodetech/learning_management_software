@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const countdownSpan = document.getElementById("countdownSpan"); // Update the ID here
   const userEmailSpan = document.getElementById("userEmail");
 
-  const userEmail = sessionStorage.getItem("userEmail");
-  const hashnode = sessionStorage.getItem("hashnode"); // Retrieve saved hashnode
+  const userEmail = localStorage.getItem("userEmail");
+  const hashnode = localStorage.getItem("hashnode"); // Retrieve saved hashnode
 
   if (userEmail) {
     userEmailSpan.textContent = userEmail;
@@ -45,11 +45,27 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCountdown(); // Call it once to initialize the span
   startCountdown();
 
+  const moveToNextInput = (currentInput) => {
+    const currentIndex = Array.from(codeInputs).indexOf(currentInput);
+    if (currentIndex >= 0 && currentIndex < codeInputs.length - 1) {
+      codeInputs[currentIndex + 1].focus();
+    }
+  };
+
+  codeInputs.forEach((input, index) => {
+    input.addEventListener("input", () => {
+      if (input.value.length === 1) {
+        moveToNextInput(input);
+      }
+    });
+  });
+
   verifyButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const enteredOTP = Array.from(codeInputs).map((input) => input.value).join("");
-
+    const enteredOTP = Array.from(codeInputs)
+      .map((input) => input.value)
+      .join("");
 
     const apiUrl = `https://backend.pluralcode.institute/student/otp?otp=${enteredOTP}&hashcode=${hashnode}&email=${userEmail}&type=validate`;
     const requestOptions = {
@@ -67,7 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
           "OTP verification successful. Redirecting to password reset page..."
         );
 
-        window.location.href = "./reset_password.html";
+        // Save the entered OTP in local storage
+        localStorage.setItem("userOTP", enteredOTP);
+
+        window.location.href = "./edit_password_change.html";
       } else {
         console.error("API Error:", result.message);
         alert("OTP verification failed. Please check the code and try again.");

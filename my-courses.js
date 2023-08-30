@@ -380,6 +380,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                   .catch((error) =>
                     console.error("Error unlocking next module:", error)
                   );
+              } else {
+                // Display completion message
+                const completionMessage = document.createElement("div");
+                completionMessage.textContent =
+                  "You have completed all the modules in this course.";
+                completionMessage.classList.add("completionMessage");
+                modulesContainer.appendChild(completionMessage);
+
+                // Remove the completion message after 10 seconds
+                setTimeout(() => {
+                  if (completionMessage.parentNode) {
+                    completionMessage.parentNode.removeChild(completionMessage);
+                  }
+                }, 10000); // 10 seconds
               }
             }
           } catch (error) {
