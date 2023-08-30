@@ -146,13 +146,56 @@ document.addEventListener("DOMContentLoaded", async () => {
             ".milestones_container"
           );
 
-          const tooltip = document.getElementById("tooltip");
+          // Find the first milestone
+          const firstMilestone = sortedMilestones[0];
+
+          if (firstMilestone) {
+            const firstAttachment = firstMilestone.lecture.attachments[0];
+
+            if (firstAttachment.kind === "video") {
+              // Display video content
+              videoPlayer.style.display = "block";
+              const videoUrl = firstAttachment.url;
+              const sourceMp4 = videoPlayer.querySelector(
+                "source[type='video/mp4']"
+              );
+              const sourceWebm = videoPlayer.querySelector(
+                "source[type='video/webm']"
+              );
+              sourceMp4.setAttribute("src", videoUrl);
+              sourceWebm.setAttribute("src", videoUrl);
+              videoPlayer.load();
+            } else if (firstAttachment.kind === "pdf_embed") {
+              // Display PDF content
+              pdfContainer.style.display = "block";
+              const pdfUrl = firstAttachment.url;
+              const objectTag = pdfContainer.querySelector("object");
+              const iframeTag = pdfContainer.querySelector("iframe");
+              objectTag.setAttribute("data", pdfUrl);
+              iframeTag.setAttribute("src", pdfUrl);
+            } else if (firstAttachment.kind === "quiz") {
+              // Display "Take quiz" tooltip
+              const takeQuizTooltip = document.createElement("div");
+              takeQuizTooltip.classList.add("tooltip");
+              takeQuizTooltip.textContent = "Take Quiz";
+              milestonesContainer.appendChild(takeQuizTooltip);
+
+              takeQuizTooltip.addEventListener("click", () => {
+                // Navigate to the quiz URL
+                const quizUrl = `quiz.html?courseid=${courseId}&teachableid=${teachable_course_id}&moduleid=${moduleId}&quizid=${firstAttachment.id}`;
+                window.location.href = quizUrl;
+              });
+            }
+          }
 
           const urlParams = new URLSearchParams(window.location.search);
           const moduleId = urlParams.get("moduleid");
 
           let clickedMilestones = 0; // Define the clickedMilestones variable
           const totalMilestones = sortedMilestones.length; // Define the totalMilestones variable
+
+          // Declare a variable to keep track of the active milestone
+          let activeMilestone = null;
 
           sortedMilestones.forEach((milestone, index) => {
             const milestoneElement = document.createElement("div");
@@ -189,6 +232,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const moduleId = urlParams.get("moduleid");
                     const teachable_course_id = urlParams.get("teachableid");
                     const quizId = attachment.id; // Assuming the attachment has an ID property
+
+                    // Remove active class from the previously active milestone
+                    if (activeMilestone) {
+                      activeMilestone.classList.remove("module_active");
+                    }
+
+                    // Add active class to the clicked milestone
+                    milestoneElement.classList.add("module_active");
+
+                    // Update the active milestone
+                    activeMilestone = milestoneElement;
 
                     // Check if the milestone is clicked for the first time
                     if (!savedAttachmentState) {
@@ -242,7 +296,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   label = "Video";
                   icon = "<i class='bx bx-play'></i>";
 
-                  // Load attachment state from localStorage
                   const attachmentStateKey = `${moduleKey}_${attachment.id}`;
                   const savedAttachmentState =
                     localStorage.getItem(attachmentStateKey);
@@ -251,11 +304,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                     icon = "<i class='bx bx-check-circle'></i>";
                   }
 
-                  // Add click event listener for video attachment
                   attachmentInfo.addEventListener("click", async () => {
                     pdfContainer.style.display = "none";
                     videoPlayer.style.display = "block";
-                    tooltip.style.display = "none";
+
+                    // Remove active class from the previously active milestone
+                    if (activeMilestone) {
+                      activeMilestone.classList.remove("module_active");
+                    }
+
+                    // Add active class to the clicked milestone
+                    milestoneElement.classList.add("module_active");
+
+                    // Update the active milestone
+                    activeMilestone = milestoneElement;
 
                     const videoUrl = attachment.url;
 
@@ -279,11 +341,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                       </div>
                     `;
 
-                    // Save the attachment state as "opened" in local storage
-                    localStorage.setItem(attachmentStateKey, "opened");
-
                     // Automatically start playing the video if there's saved progress
-                    const savedProgressKey = `video_progress_${courseId}_${moduleId}_${lecture.position}`;
+                    const savedProgressKey = `video_progress_${courseId}_${moduleId}_${lecture.id}_${attachment.id}_${index}`; // Use index
                     const savedProgress =
                       localStorage.getItem(savedProgressKey);
 
@@ -292,28 +351,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                       videoPlayer.play(); // Automatically start playing
                     }
 
-                    // Listen for time updates while the video is playing
+                    if (savedProgress) {
+                      videoPlayer.currentTime = parseFloat(savedProgress);
+                      videoPlayer.play(); // Automatically start playing
+                    }
+
                     videoPlayer.addEventListener("timeupdate", () => {
-                      // Save the current progress in local storage
                       localStorage.setItem(
                         savedProgressKey,
                         videoPlayer.currentTime
                       );
                     });
 
-                    // Check if the milestone is clicked for the first time
                     if (!savedAttachmentState) {
-                      // Mark the attachment as opened
                       localStorage.setItem(attachmentStateKey, "opened");
-
-                      // Increment the clickedMilestones count
                       clickedMilestones++;
 
-                      // Calculate the progress percentage based on clickedMilestones and totalMilestones
                       const progressPercentage =
                         (clickedMilestones / totalMilestones) * 100;
-
-                      // Update the progress using the API after a delay
 
                       await updateProgressToAPI(
                         progressPercentage,
@@ -325,7 +380,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                   });
 
-                  // Automatically start playing the video if there's saved progress
                   if (
                     savedAttachmentState === "opened" &&
                     videoPlayer.currentTime > 0
@@ -333,7 +387,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     videoPlayer.load();
                     videoPlayer.play();
                   } else {
-                    // If no saved progress, but the video was opened before, load the video
                     if (savedAttachmentState === "opened") {
                       videoPlayer.load();
                     }
@@ -354,7 +407,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     videoPlayer.style.display = "none";
                     videoPlayer.pause();
                     pdfContainer.style.display = "block";
-                    tooltip.style.display = "none";
+
+                    // Remove active class from the previously active milestone
+                    if (activeMilestone) {
+                      activeMilestone.classList.remove("module_active");
+                    }
+
+                    // Add active class to the clicked milestone
+                    milestoneElement.classList.add("module_active");
+
+                    // Update the active milestone
+                    activeMilestone = milestoneElement;
 
                     const pdfUrl = attachment.url;
 

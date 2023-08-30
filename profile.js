@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const apiData = getCookieValue("apiData");
+  const apiData = localStorage.getItem("apiData"); // Retrieve apiData from localStorage
   const userToken = getCookieValue("userToken");
   console.log(apiData);
 
@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const refname2 = document.querySelector("input[name='refname2']");
   const refphone1 = document.querySelector("input[name='refphone1']");
   const refphone2 = document.querySelector("input[name='refphone2']");
+  const cancelButton = document.getElementById("cancel-button");
 
   try {
     if (userData.user) {
@@ -67,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       refname2.value = userData.user.refname2 || "";
       refphone1.value = userData.user.refphone1 || "";
       refphone2.value = userData.user.refphone2 || "";
-      password.value = userData.user.password || "";
+      // password.value = userData.user.password || "";
 
       // For the ID type select, loop through options and select the matching one
       const idTypeOptions = idTypeSelect.options;
@@ -156,9 +157,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         passwordModal.style.display = "block";
       });
 
-      // closeButton.addEventListener("click", () => {
-      //   passwordModal.style.display = "none";
-      // });
+      cancelButton.addEventListener("click", () => {
+        passwordModal.style.display = "none";
+      });
 
       updateButton.addEventListener("click", async (e) => {
         e.preventDefault();

@@ -825,7 +825,7 @@ nav .nav-item {
   justify-content: start;
   gap: 20px;
 }
-.module_details_text{
+.module_details_text {
   padding: 10px;
   width: 100%;
 }
@@ -1717,7 +1717,7 @@ nav .nav-item {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 .milestones .milestone_navigation:first-of-type {
   padding-top: 4rem;
@@ -1953,6 +1953,7 @@ nav .nav-item {
   justify-content: center;
   flex-direction: column;
   width: 100%;
+  padding: 40px 0px;
 }
 #password-modal .modal-content label,
 #password-modal .modal-content input {
@@ -2022,6 +2023,11 @@ nav .nav-item {
   height: 100%;
   background-color: #f8991d; /* orange color for the filled part */
   transition: width 0.3s ease-in-out; /* Add a smooth transition effect */
+}
+
+.module_active {
+  background-color: #00ff002b;
+  padding: 5px;
 }
 
 /* .module_card {
