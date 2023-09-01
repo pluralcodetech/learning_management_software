@@ -1670,7 +1670,7 @@ nav .nav-item {
   align-items: start;
   justify-content: center;
   gap: 2rem;
-  width: 100%;
+  width: 90%;
   height: max-content;
 }
 .video_player_header {
@@ -1732,7 +1732,7 @@ nav .nav-item {
   cursor: pointer;
 }
 .video_player_container .main_player {
-  width: 97%;
+  width: 100%;
 }
 .video_player_container .main_player .video_player_vd {
   width: 100%;
@@ -2064,6 +2064,12 @@ nav .nav-item {
     transform: rotate(360deg);
   }
 }
+
+.active_video_player {
+  display: none;
+}
+
+
 
 /* media queries */
 @media (max-width: 767px) {

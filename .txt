@@ -78,3 +78,101 @@
               document.getElementById("my_courses_button");
             myCoursesButton.classList.remove("active");
           };
+
+
+////////video\\\\\\\\\
+else if (attachment.kind === "video") {
+                  label = "Video";
+                  icon = "<i class='bx bx-play'></i>";
+
+                  const attachmentStateKey = `${moduleKey}_${attachment.id}`;
+                  const savedAttachmentState =
+                    localStorage.getItem(attachmentStateKey);
+
+                  if (savedAttachmentState === "opened") {
+                    icon = "<i class='bx bx-check-circle'></i>";
+                  }
+
+                  attachmentInfo.addEventListener("click", async () => {
+                    pdfContainer.style.display = "none";
+                    videoPlayer.style.display = "block";
+
+                    // Remove active class from the previously active milestone
+                    if (activeMilestone) {
+                      activeMilestone.classList.remove("module_active");
+                    }
+
+                    // Add active class to the clicked milestone
+                    milestoneElement.classList.add("module_active");
+
+                    // Update the active milestone
+                    activeMilestone = milestoneElement;
+
+                    const videoUrl = attachment.url;
+
+                    const sourceMp4 = videoPlayer.querySelector(
+                      "source[type='video/mp4']"
+                    );
+                    const sourceWebm = videoPlayer.querySelector(
+                      "source[type='video/webm']"
+                    );
+                    sourceMp4.setAttribute("src", videoUrl);
+                    sourceWebm.setAttribute("src", videoUrl);
+
+                    videoPlayer.load();
+
+                    // Change the icon to a checkmark
+                    attachmentInfo.innerHTML = `
+                      <i class='bx bx-check-circle'></i>
+                      <div>
+                        <span><b>${label}: ${capitalizedLectureName}</b></span>
+                        <p>Module Content: ${lecturePosition}</p>
+                      </div>
+                    `;
+
+                    // Automatically start playing the video if there's saved progress
+                    const savedProgressKey = `video_progress_${courseId}_${moduleId}_${lecture.id}_${attachment.id}_${index}`;
+                    const savedProgress =
+                      localStorage.getItem(savedProgressKey);
+
+                    if (savedProgress) {
+                      videoPlayer.currentTime = parseFloat(savedProgress);
+                      videoPlayer.play(); // Automatically start playing
+                    }
+
+                    videoPlayer.addEventListener("timeupdate", () => {
+                      localStorage.setItem(
+                        savedProgressKey,
+                        videoPlayer.currentTime
+                      );
+                    });
+
+                    if (!savedAttachmentState) {
+                      localStorage.setItem(attachmentStateKey, "opened");
+                      clickedMilestones++;
+
+                      const progressPercentage =
+                        (clickedMilestones / totalMilestones) * 100;
+
+                      await updateProgressToAPI(
+                        progressPercentage,
+                        moduleId,
+                        teachable_course_id,
+                        targetCourse.enrollment_source,
+                        userToken
+                      );
+                    }
+                  });
+
+                  if (
+                    savedAttachmentState === "opened" &&
+                    videoPlayer.currentTime > 0
+                  ) {
+                    videoPlayer.load();
+                    videoPlayer.play();
+                  } else {
+                    if (savedAttachmentState === "opened") {
+                      videoPlayer.load();
+                    }
+                  }
+                }

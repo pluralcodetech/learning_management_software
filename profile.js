@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const apiData = localStorage.getItem("apiData"); // Retrieve apiData from localStorage
+  const apiData = localStorage.getItem("userData"); // Retrieve apiData from localStorage
   const userToken = getCookieValue("userToken");
   console.log(apiData);
 

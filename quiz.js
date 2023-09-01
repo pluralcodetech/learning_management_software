@@ -275,19 +275,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const expirationDate = new Date();
                 expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const courseId = urlParams.get("courseid"); // Use the course ID
+                // const urlParams = new URLSearchParams(window.location.search);
+                // const courseId = urlParams.get("courseid"); // Use the course ID
 
-                // Create a unique key using the course ID and quiz ID
-                const storageKey = `userScore_${courseId}_${quizId}`;
 
-                // Save the user's score and expiration date in local storage
-                const scoreData = {
-                  userScore: userScore,
-                  quizId: quizId,
-                  expirationDate: expirationDate.getTime(),
-                };
-                localStorage.setItem(storageKey, JSON.stringify(scoreData));
+                localStorage.setItem("userScore", userScore);
 
                 console.log(userScore, quizId);
 
