@@ -289,6 +289,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 };
                 localStorage.setItem(storageKey, JSON.stringify(scoreData));
 
+                console.log(userScore, quizId);
+
                 // Redirect the user to the my-courses.html page with the current course ID
                 window.location.href = `my-courses.html?courseid=${courseId}`;
               } catch (error) {
