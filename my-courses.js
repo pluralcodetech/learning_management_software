@@ -1,11 +1,32 @@
+// main page body rendering and dashboard API backend data usage logic
 document.addEventListener("DOMContentLoaded", async () => {
+  // Get goBack Button
   const goBackLink = document.getElementById("goBackLink");
 
+  // Get page loader
+  const loader = document.getElementById("loader"); // Get the loader element
+
+  // go back funtion that mimics website back history button
   goBackLink.addEventListener("click", (event) => {
     event.preventDefault(); // Prevents the default link behavior (navigating to a new page)
     window.history.back(); // Mimics the browser's back button action
   });
+
+  // Function to show/hide the loader
+  const showLoader = (visible) => {
+    loader.style.display = visible ? "flex" : "none";
+  };
+
+  // Function to hide the loader after a delay
+  const hideLoaderWithDelay = () => {
+    setTimeout(() => {
+      showLoader(false);
+    }, 5000); // 5 seconds delay (you can adjust this value as needed)
+  };
+
   try {
+    showLoader(true); // Show the loader before making the API call
+
     // Retrieve userToken from cookies
     const userToken = getCookie("userToken");
 
@@ -29,6 +50,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
       const result = await response.json();
       console.log("API Result:", result);
+
+      // Hide the loader when the API call is successful
+      hideLoaderWithDelay(); // Hide the loader after a delay
 
       const expirationDate = new Date();
       expirationDate.setFullYear(expirationDate.getFullYear() + 1);
@@ -117,13 +141,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const outstandingPaymentElement =
         paymentContainer.querySelector("p span");
+      const payment_warning = document.getElementById("payment_warning");
+      const show_payment_button = document.getElementById(
+        "show_payment_button"
+      );
 
       if (targetCourse && targetCourse.enrollment_source === "admission_form") {
         const outstandingPayment = targetCourse.balance;
 
-        outstandingPaymentElement.textContent = `N${outstandingPayment}`;
-
-        // You can set other dynamic content here as well
+        if (outstandingPayment === 0) {
+          outstandingPaymentElement.textContent = `No outstanding payment for ${targetCourse.course_name}`;
+          outstandingPaymentElement.style.fontSize = "18px";
+          outstandingPaymentElement.style.lineHeight = "1.2";
+          payment_warning.style.display = "none";
+          show_payment_button.style.display = "none";
+        } else {
+          outstandingPaymentElement.textContent = `N${outstandingPayment}`;
+        }
       }
       // Get the module containers and payment div
       const moduleContainers = document.querySelector(".module_containers");
@@ -320,68 +354,80 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             modulesContainer.appendChild(moduleCard);
 
-            // Check if the quizCompleted flag is set in localStorage
+            // Check if quizCompleted flag is set in localStorage
             const quizCompletedFlag = localStorage.getItem("quizCompleted");
 
             if (quizCompletedFlag === "true") {
               // Remove the quizCompleted flag
               localStorage.removeItem("quizCompleted");
 
-              // Find the next locked module
-              const nextLockedModule = targetCourse.course_module.find(
-                (module) => !module.unlockedstatus
-              );
+              // Check the enrollment source
+              if (
+                targetCourse &&
+                targetCourse.enrollment_source !== "admission_form"
+              ) {
+                // Find the next locked module
+                const nextLockedModule = targetCourse.course_module.find(
+                  (module) => !module.unlockedstatus
+                );
 
-              if (nextLockedModule) {
-                const unlockModuleAPIUrl =
-                  "https://backend.pluralcode.institute/student/unlock-loop-module";
-                const userScore = JSON.parse(localStorage.getItem("userScore"));
-                const nextModuleId = nextLockedModule.id;
-                const teachableCourseId = targetCourse.teachable_course_id; // Use teachable_course_id from the API result
-                const userToken = getCookie("userToken"); // Get userToken from cookies
-
-                // Create the request body
-                const requestBody = {
-                  course_id: teachableCourseId,
-                  module_id: nextModuleId,
-                  quizscore: userScore,
-                };
-
-                // Prepare headers and options for the fetch request
-                const headers = new Headers();
-                headers.append("Content-Type", "application/json");
-                headers.append("Authorization", `Bearer ${userToken}`); // Add the userToken to headers
-
-                const requestOptions = {
-                  method: "POST",
-                  headers: headers,
-                  body: JSON.stringify(requestBody),
-                  redirect: "follow",
-                };
-
-                // Make the API call to unlock the next module
-                fetch(unlockModuleAPIUrl, requestOptions)
-                  .then((response) => response.json())
-                  .then((result) => {
-                    if (
-                      result.message === "congratulations next module unlocked"
-                    ) {
-                      console.log("Next module unlocked successfully!");
-                      // You can update UI or perform any other actions here
-                      // Get the next module card by its ID and remove the "locked" class
-                      const nextModuleCard = document.querySelector(
-                        `[data-module-id="${nextModuleId}"]`
-                      );
-                      if (nextModuleCard) {
-                        nextModuleCard.classList.remove("locked");
-                      }
-                    }
-                  })
-                  .catch((error) =>
-                    console.error("Error unlocking next module:", error)
+                if (nextLockedModule) {
+                  const unlockModuleAPIUrl =
+                    "https://backend.pluralcode.institute/student/unlock-loop-module";
+                  const userScore = JSON.parse(
+                    localStorage.getItem("userScore")
                   );
+                  const nextModuleId = nextLockedModule.id;
+                  const teachableCourseId = targetCourse.teachable_course_id; // Use teachable_course_id from the API result
+                  const userToken = getCookie("userToken"); // Get userToken from cookies
+
+                  // Create the request body
+                  const requestBody = {
+                    course_id: teachableCourseId,
+                    module_id: nextModuleId,
+                    quizscore: userScore,
+                  };
+
+                  // Prepare headers and options for the fetch request
+                  const headers = new Headers();
+                  headers.append("Content-Type", "application/json");
+                  headers.append("Authorization", `Bearer ${userToken}`); // Add the userToken to headers
+
+                  const requestOptions = {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody),
+                    redirect: "follow",
+                  };
+
+                  // Make the API call to unlock the next module
+                  fetch(unlockModuleAPIUrl, requestOptions)
+                    .then((response) => response.json())
+                    .then((result) => {
+                      if (
+                        result.message ===
+                        "congratulations next module unlocked"
+                      ) {
+                        console.log("Next module unlocked successfully!");
+                        // You can update UI or perform any other actions here
+                        // Get the next module card by its ID and remove the "locked" class
+                        const nextModuleCard = document.querySelector(
+                          `[data-module-id="${nextModuleId}"]`
+                        );
+                        if (nextModuleCard) {
+                          nextModuleCard.classList.remove("locked");
+                        }
+                      }
+                    })
+                    .catch((error) =>
+                      console.error("Error unlocking next module:", error)
+                    );
+
+                  // Remove the userScore from localStorage after it's been used
+                  localStorage.removeItem("userScore");
+                }
               } else {
-                // Display completion message
+                // Display completion message or handle other cases as needed
                 const completionMessage = document.createElement("div");
                 completionMessage.textContent =
                   "You have completed all the modules in this course.";
@@ -406,12 +452,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     } else {
       console.log("User data or token not found in cookies.");
+      // Hide the loader when the API call is successful
+      hideLoaderWithDelay(); // Hide the loader after a delay
     }
   } catch (error) {
     console.error("An error occurred:", error);
+    // Hide the loader when the API call is successful
+    hideLoaderWithDelay(); // Hide the loader after a delay
   }
 });
 
+// Fetching study material data for each module in a course...
 async function fetchStudyMaterialsData(teachableCourseId, lectures, userData) {
   const lectureIds = lectures.map((lecture) => lecture.id);
 
@@ -445,6 +496,7 @@ async function fetchStudyMaterialsData(teachableCourseId, lectures, userData) {
   }
 }
 
+//Fucntion that gets cookie
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -454,6 +506,7 @@ function getCookie(name) {
 const urlParams = new URLSearchParams(window.location.search);
 const teachable_course_id = urlParams.get("teachableid");
 
+// function that redirects to the video course
 function redirectToVideoCourse(courseId, moduleId) {
   window.location.href = `video-course.html?courseid=${courseId}&moduleid=${moduleId}&teachableid=${teachable_course_id}`;
 }
@@ -480,5 +533,125 @@ function logoutUser() {
 
 // Clear a specific cookie by setting its expiration in the past
 function clearCookie(name) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None`;
 }
+
+// Function for payment initialization
+document.addEventListener("DOMContentLoaded", () => {
+  // Find the button by its ID
+  const payCertificationFeeButton = document.getElementById(
+    "payCertificationFeeButton"
+  );
+
+  // Add a click event listener to the button
+  payCertificationFeeButton.addEventListener("click", () => {
+    function generateRandomHexWithHyphens(length) {
+      const characters = "0123456789ABCDEF";
+      let result = "";
+
+      for (let i = 0; i < length; i++) {
+        if (i > 0 && i % 4 === 0) {
+          // Add a hyphen every 4 characters
+          result += "-";
+        }
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+      }
+
+      return result;
+    }
+
+    // Generate a random hexadecimal code with 8 groups of 4 characters separated by hyphens
+    const tx_ref = generateRandomHexWithHyphens(32);
+    console.log(tx_ref);
+    // Extract the course ID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get("courseid");
+    const teachable = urlParams.get("teachableid");
+
+    // Check if courseId is available
+    if (!courseId) {
+      console.error("Course ID not found in URL.");
+      return;
+    }
+
+    // Retrieve the data from local storage
+    const apiData = JSON.parse(localStorage.getItem("apiData"));
+    console.log("API Data:", apiData); // Log the retrieved data for debugging
+
+    // Check if apiData is available
+    if (!apiData) {
+      console.error("API data not found in local storage.");
+      return;
+    }
+
+    // Find the course information based on courseId
+    const courseInfo = apiData.enrolledcourses.find(
+      (course) => course.id === Number(courseId)
+    );
+
+    console.log(courseInfo);
+
+    console.log("Course Info:", courseInfo); // Log the courseInfo for debugging
+
+    // Check if courseInfo is available
+    if (!courseInfo) {
+      console.error("Course information not found.");
+      return;
+    }
+
+    const amount = courseInfo.loopcertificatiofee;
+
+    // Construct the redirect URL with additional parameters
+    const redirect_url = `https://pluralcode.academy`;
+
+    console.log("teachbale:", teachable);
+    console.log("amount:", amount);
+    console.log("TX:", tx_ref);
+
+    // Define the API request parameters with dynamic values
+    const requestBody = {
+      tx_ref: tx_ref,
+      amount: amount,
+      currency: courseInfo.currency,
+      title: courseInfo.name,
+      redirect_url: redirect_url,
+      email: apiData.user.email,
+      phonenumber: apiData.user.phone_number,
+      name: apiData.user.name,
+    };
+
+    // Define the API request options
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+      redirect: "follow",
+    };
+
+    // Make the API request
+    fetch(
+      "https://backend.pluralcode.institute/initialise-payment",
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        // Check if the API response contains the expected data
+        if (data && data.status === "success" && data.data.link) {
+          // Open a new tab or window with the payment link
+          const paymentLink = data.data.link;
+          window.open(paymentLink, "_blank");
+          console.log(requestOptions);
+        } else {
+          // Handle API response with missing data or errors
+          console.error("API response is missing data or contains errors.");
+        }
+      })
+      .catch((error) => {
+        // Handle API request error
+        console.error("Error making API request:", error);
+      });
+  });
+});

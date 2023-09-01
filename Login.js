@@ -44,10 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.location.href = "dashboard.html";
       } else {
+        spinner.style.display = "none";
+
         alert("Login failed. Please check your credentials.");
       }
     } catch (error) {
       console.log("error", error);
+      spinner.style.display = "none";
+
       alert("An error occurred while trying to log in.");
     }
   });

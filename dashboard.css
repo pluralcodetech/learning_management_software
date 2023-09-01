@@ -347,7 +347,7 @@ nav .nav-item {
   padding: 38px;
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 35px;
   border-radius: 8px;
@@ -621,7 +621,7 @@ nav .nav-item {
   display: block;
 }
 .accordion-container {
-  width: 73%;
+  width: 100%;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
@@ -2016,6 +2016,10 @@ nav .nav-item {
 
 /* CSS for the progress bars */
 .progress_bar {
+  /* remove this later */
+  display: none;
+  /* remove this later */
+
   width: 100%;
   height: 10px;
   background-color: #f8991d2a;
@@ -2044,12 +2048,26 @@ nav .nav-item {
   padding-top: 5px;
 }
 
-/* page loader */
+#loader {
+  position: absolute;
+  width: 93.5%;
+  height: 300%;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  overflow-x: hidden;
+  background-color: #000000b1;
+  z-index: 999;
+}
+
+.my_course #loader {
+  height: 105%;
+}
 
 .loader {
-  border-top: 16px solid blue;
-  border-right: 16px solid green;
-  border-bottom: 16px solid red;
+  margin-top: 15rem;
+  border: 16px solid #22205750; /* Light grey */
+  border-top: 16px solid #f8991d; /* Blue */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -2065,14 +2083,19 @@ nav .nav-item {
   }
 }
 
-.active_video_player {
-  display: none;
+/* .dashboard_body{
+  overflow-x: hidden;
+} */
+
+.dashboard_main {
+  overflow: hidden !important;
 }
-
-
 
 /* media queries */
 @media (max-width: 767px) {
+  main {
+    width: 100%;
+  }
   main section:last-of-type .header {
     height: 70px;
     width: 100%;
@@ -2095,6 +2118,9 @@ nav .nav-item {
   }
   main section:first-of-type.active {
     left: 0%;
+  }
+  .dashboard_main {
+    width: 100%;
   }
   .dashboard_main .header {
     padding: 20px 10px;
@@ -2133,7 +2159,7 @@ nav .nav-item {
   }
   .dashboard_body {
     padding: 15px;
-    width: 100vw;
+    width: 100%;
     overflow-x: hidden;
   }
   .mobile_page_title {
@@ -2529,6 +2555,10 @@ nav .nav-item {
   }
 }
 @media (min-width: 768px) and (max-width: 1030px) {
+  #loader {
+    width: 100%;
+    /* height: 300%; */
+  }
   body {
     height: max-content;
   }

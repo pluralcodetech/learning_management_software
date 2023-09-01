@@ -83,6 +83,9 @@
             </div>
           </div>
           <div class="dashboard_body">
+            <div id="loader">
+              <span class="loader"></span>
+            </div>
             <div class="community__">
               <a href="#" id="goBackLink"
                 ><i class="bx bxs-chevron-left-circle"></i
@@ -101,7 +104,9 @@
                   style="display: none"
                 >
                   <div class="course_page_search capstones__">
-                    <button>Pay Certification Fee ($100)</button>
+                    <button id="payCertificationFeeButton">
+                      Pay Certification Fee <span> ($100)</span>
+                    </button>
                     <button disabled>Begin Capstone Project</button>
                   </div>
                 </div>
@@ -148,11 +153,11 @@
                 <div class="payment" style="display: none">
                   <!-- Content for Payment Status -->
                   <div class="payment_container">
-                    <p>
+                    <p id="outstanding_P_details">
                       Outstanding Payment for Product Design: <br />
                       <span>N60,000</span>
                     </p>
-                    <p>
+                    <p id="payment_warning">
                       NB: You are to make your outstanding payment on or before
                       Sept 1, 2022
                     </p>

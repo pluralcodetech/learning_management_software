@@ -215,6 +215,38 @@ form button:hover {
   box-shadow: 0px 0px 3px var(--pc-dark-gray);
 }
 
+.success_page button {
+  font-family: var(--font-gilroy-semibold);
+  font-size: var(--normal-text);
+  background-color: var(--pc-orange);
+  border: none;
+  outline: none;
+  color: var(--pc-white-white);
+  letter-spacing: 1px;
+  width: 70%;
+  padding: 15px 18px;
+  margin-top: 3rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.1s ease-in;
+}
+
+.success_page button:hover {
+  /* background-color: #f8991dec; */
+  box-shadow: 0px 0px 3px var(--pc-dark-gray);
+}
+
+.success_page .container {
+  margin: auto;
+  margin-top: 10rem;
+  background: var(--pc-white-white);
+  width: max-content;
+  height: max-content;
+  padding: 6rem 4.5rem 6rem 4.5rem;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px var(--pc-light-gray);
+}
+
 /* media queries */
 @media (max-width: 767px) {
   body {

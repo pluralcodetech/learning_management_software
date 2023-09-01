@@ -1,15 +1,32 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const logoutButton = document.getElementById("logout_button"); // Replace with the actual ID of your logout button/link
+  const loader = document.getElementById("loader"); // Get the loader element
 
+  // function to call logout helper function
   logoutButton.addEventListener("click", () => {
     logoutUser();
   });
+
+  // Function to show/hide the loader
+  const showLoader = (visible) => {
+    loader.style.display = visible ? "flex" : "none";
+  };
+
+  // Function to hide the loader after a delay
+  const hideLoaderWithDelay = () => {
+    setTimeout(() => {
+      showLoader(false);
+    }, 3000); // 5 seconds delay (you can adjust this value as needed)
+  };
+
   try {
     const profileNameElement = document.querySelector(".user_name");
     const studentIdElement = document.querySelector(".student_id");
     const initialsElement = document.querySelector(".initials span"); // Assuming there's an element with class "initials"
 
     const makeAPICall = async () => {
+      showLoader(true); // Show the loader before making the API call
+
       console.log("API recalled");
 
       // Retrieve userToken from cookies
@@ -34,6 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
         const result = await response.json();
         console.log("API Result:", result);
+
+        // Hide the loader when the API call is successful
+        hideLoaderWithDelay(); // Hide the loader after a delay
 
         // Set active navigation item
         const currentPage = window.location.pathname.split("/").pop();
@@ -111,10 +131,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             detailsButton.innerHTML = `<span>Continue Learning <span><i class='bx bx-right-arrow-alt'></i></span></span>`;
             detailsButton.addEventListener("click", () => {
               console.log(course.teachable_course_id);
-              setTimeout(() => {
-                // Redirect to course details page with course ID
-                window.location.href = `my-courses.html?courseid=${course.id}&teachableid=${course.teachable_course_id}`;
-              }, 3000);
+
+              // Redirect to course details page with course ID
+              window.location.href = `my-courses.html?courseid=${course.id}&teachableid=${course.teachable_course_id}`;
             });
             card.appendChild(detailsButton);
 
@@ -289,6 +308,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } else {
         console.log("User data or token not found in session storage.");
+        // Hide the loader when the API call is successful
+        hideLoaderWithDelay(); // Hide the loader after a delay
       }
     };
 
