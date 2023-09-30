@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Libre Barcode 39"
+      rel="stylesheet"
+    />
+    <title>Cert Certificate</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./certcert.css" />
+  </head>
+  <body class="certificate_page">
+    <div id="error_message"></div>
+
+    <div class="cert_container" id="pdfHtml" id="downloadPDF">
+      <div class="main_cert">
+        <img src="./new Temp (1).png" />
+
+        <div class="details_box">
+          <img src="./PluralCode 2 1.png" alt="" class="logo" />
+          <h2>Certificate</h2>
+          <h3>OF COMPLETION</h3>
+          <p>This certificate is proudly presented to</p>
+          <h2 id="student_name">---</h2>
+          <p>
+            For successfully completing the <span>Data Analytics Program</span>
+          </p>
+          <p>
+            <span>Excel |</span><span>PowerBI |</span><span>PostgresSQL |</span
+            ><span>Microsoft SQL Server |</span
+            ><span>Problem Solving Techniques</span>
+          </p>
+          <div class="dates_stamps">
+            <div class="dates">
+              <div>
+                <p>From</p>
+                <span><b>4th</b> of <b>March</b>, 2023</span>
+                <span>to <b>7th</b> of <b>may</b>, 2023</span>
+              </div>
+              <span><b>Dates</b></span>
+            </div>
+            <div class="stamp">
+              <img src="./Group 20705.png" alt="" />
+            </div>
+            <div class="sign">
+              <img src="./sign1.png" alt="" />
+              <span>Head Of Academy</span>
+            </div>
+          </div>
+          <span class="notes"
+            >Note: To verify this certificate, visit
+            <a
+              href="https://pluralcode.institute/verify-certificate"
+              target="_blank"
+              >www.pluralcode.institute/verify-certificate</a
+            >
+            and enter certificate ID</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <button onclick="generatePDF()" class="download_btn">Generate PDF</button>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./cert.js"></script>
+    <script type="text/javascript">
+      function generatePDF() {
+        //The elements
+        const element = document.getElementById("pdfHtml");
+        const sideIcon = document.getElementById("sideicon");
+
+        setTimeout(() => {
+          html2pdf(document.body, {
+            margin: 1,
+            filename: "cert.pdf",
+            image: { type: "pdf", quality: 1 },
+            html2canvas: {
+              scale: 2,
+              ignoreElements: sideIcon,
+              logging: true,
+              dpi: 1200,
+              letterRendering: true,
+            },
+            jsPDF: { unit: "mm", format: "letter", orientation: "portrait" },
+          });
+        }, 100);
+        html2pdf().set({
+          pagebreak: { mode: "avoid-all", before: "#page2el" },
+        });
+      }
+    </script>
+    <!-- <script src="./diplomacert.js"></script> -->
+  </body>
+</html>

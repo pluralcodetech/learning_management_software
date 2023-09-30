@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <title>Course Modules</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <!-- <script src="./protected-routes.js"></script> -->
+  </head>
+  <body class="my_course">
+    <main>
+      <section id="nav_list">
+        <div class="logo">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
+        </div>
+        <div>
+          <nav>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./dashboard.html">
+                <i class="bx bxs-dashboard"></i>
+                <span>My Courses</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./profile.html">
+                <i class="bx bx-user"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="nav-item" onclick="logoutUser()">
+              <div class="nav_item_line"></div>
+              <a href="#">
+                <i class="bx bx-log-out"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </section>
+      <section>
+        <div class="dashboard_main">
+          <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+            <div class="profile_nav">
+              <div class="profile_name">
+                <span class="initials"><span></span></span>
+                <div class="user_details_container">
+                  <div class="user_details">
+                    <span class="user_name">Loading</span>
+                    <span class="student_id">Student ID: Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard_body">
+            <div id="loader">
+              <span class="loader"></span>
+            </div>
+            <div class="community__">
+              <a href="#" id="goBackLink"
+                ><i class="bx bxs-chevron-left-circle"></i
+                ><span>Go Back</span></a
+              >
+              <button class="hide_community_button">
+                <i class="bx bxl-slack"></i>Cohort Community
+              </button>
+            </div>
+            <div class="course_page_details">
+              <div class="course_page_header">
+                <h3 id="course_name_placeholder">Loading...</h3>
+                <div
+                  class="course_page_search"
+                  id="capstones__"
+                  style="display: none"
+                >
+                  <div class="course_page_search capstones__">
+                    <button id="payCertificationFeeButton">
+                      Pay Certification Fee <span> ($100)</span>
+                    </button>
+                    <button disabled>Begin Capstone Project</button>
+                  </div>
+                </div>
+              </div>
+              <div class="course_page_filters">
+                <button class="active" data-filter="modules">
+                  Course Modules
+                </button>
+                <button id="paymentFilterButton" data-filter="payment">
+                  Payment Status
+                </button>
+              </div>
+              <div class="course_page_cards">
+                <div class="modules">
+                  <!-- Content for Course Modules -->
+                  <div class="module_containers"></div>
+                  <div
+                    class="capstone_project"
+                    id="hide_capstone"
+                    style="display: none"
+                  >
+                    <h3>Capstone Project & Certification</h3>
+                    <p>
+                      Before you are awarded a Professional Diploma, students
+                      are required to 1. complete all modules, 2. pay for
+                      certification and 3. submit their final project for
+                      mentor’s approval. <b id="seeMore">Show More</b>
+                    </p>
+                    <p class="hiddenText" id="hiddenText">
+                      Project approval may take 48-72 hours after submission.
+                      Please ensure to pay the Certification Fee below in order
+                      to access your project and subsequent Diploma award. After
+                      that, click ‘Begin Capstone Project’ to read project
+                      instructions, get a mentor assigned to you and begin.
+                    </p>
+                    <div class="course_page_search capstones__">
+                      <button>Pay Certification Fee ($100)</button>
+                      <button disabled>Begin Capstone Project</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="no_course_found">No modules available yet</div>
+
+                <div class="payment" style="display: none">
+                  <!-- Content for Payment Status -->
+                  <div class="payment_container">
+                    <p id="outstanding_P_details">
+                      Outstanding Payment for Product Design: <br />
+                      <span>N60,000</span>
+                    </p>
+                    <p id="payment_warning">
+                      NB: You are to make your outstanding payment on or before
+                      Sept 1, 2022
+                    </p>
+                    <button id="show_payment_button">
+                      Complete Payment
+                      <i
+                        style="margin-left: 8px"
+                        id="spinner"
+                        class="fa fa-circle-o-notch fa-spin"
+                      ></i>
+                    </button>
+                  </div>
+                  <!-- // Credit card -->
+                  <div class="payment_CC">
+                    <div class="payment_CC_header">
+                      <h3>Complete Your Outstanding Payment</h3>
+                      <i class="bx bx-x" id="close_payment_CC"></i>
+                    </div>
+                    <div class="payment_CC_forms">
+                      <div class="payment_CC_radios">
+                        <span>Payment Method</span>
+                        <div>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Credit Card
+                          </label>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Bank Transfer
+                          </label>
+                        </div>
+                      </div>
+                      <form action="" class="payment_CC_form">
+                        <span>Insert Card Details</span>
+                        <div>
+                          <label for="card-name">Card Name</label>
+                          <input
+                            type="text"
+                            placeholder="Enter the name on your card"
+                          />
+                        </div>
+                        <div>
+                          <label for="card-number">Card Number</label>
+                          <div class="card_number_container">
+                            <input
+                              type="password"
+                              placeholder="XXXX XXXX XXXX XXXX"
+                            />
+                            <i class="bx bxs-credit-card"></i>
+                          </div>
+                        </div>
+                        <div class="card_CVV_ED">
+                          <div>
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" placeholder="--/--" />
+                          </div>
+                          <div>
+                            <label for="cvv-code">CVV Code</label>
+                            <input type="text" placeholder="---" />
+                          </div>
+                        </div>
+                        <div class="student_policy">
+                          <input type="checkbox" name="student_policy" id="" />
+                          <span
+                            >By clicking on pay now, you agree to our students
+                            policy</span
+                          >
+                        </div>
+                        <button>Pay Now</button>
+                      </form>
+                    </div>
+                  </div>
+                  <!-- // Bank transfer -->
+
+                  <div class="payment_bank">
+                    <div class="payment_bank_header">
+                      <h3>Complete Your Oustanding Payment</h3>
+                      <i class="bx bx-x"></i>
+                    </div>
+                    <div class="payment_bank_forms">
+                      <div class="payment_bank_radios">
+                        <span>Payment Method</span>
+                        <div>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Credit Card
+                          </label>
+                          <label class="custom-radio">
+                            <input type="radio" name="radioGroup" />
+                            <span class="checkmark"></span>
+                            Bank Transfer
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="payment_bank_details">
+                      <span>Bank Details</span>
+                      <span>Wema Bank</span>
+                      <span>
+                        <span>Account Name:</span> PluralCode Technologies
+                      </span>
+                      <!-- // span 4 -->
+                      <span>
+                        <div class="account_number_container">
+                          <label for="account_number">Account Number: </label>
+                          <input
+                            type="text"
+                            id="account_number"
+                            value="0089765346"
+                          />
+                        </div>
+                        <p id="account_number_tooltip"></p>
+                        <button id="copy_bank_details">
+                          Copy <i class="bx bx-copy-alt"></i>
+                        </button>
+                      </span>
+                    </div>
+                    <div class="student_policy">
+                      <input type="checkbox" name="student_policy" id="" />
+                      <span
+                        >By clicking on payment sent, you agree to our students
+                        policy</span
+                      >
+                    </div>
+                    <button>Payment Sent</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./my-courses.js"></script>
+    <script src="./menu-toggle.js"></script>
+    <!-- <script src="./protected-routes.js"></script> -->
+  </body>
+</html>

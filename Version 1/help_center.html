@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <title>Student Help Desk</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <script src="./protected-routes.js"></script>
+  </head>
+  <body>
+    <main>
+      <section id="nav_list">
+        <div class="logo">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
+        </div>
+        <div>
+          <nav>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./dashboard.html">
+                <i class="bx bxs-dashboard"></i>
+                <span>My Courses</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./profile.html">
+                <i class="bx bx-user"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./help_center.html">
+                <i class="bx bx-help-circle"></i>
+                <span>Help Center</span>
+              </a>
+            </div>
+            <div class="nav-item" id="logout_button">
+              <div class="nav_item_line"></div>
+              <a href="#">
+                <i class="bx bx-log-out"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </section>
+      <section>
+        <div class="dashboard_main">
+          <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+            <div class="profile_nav">
+              <div class="profile_name">
+                <span class="initials"><span></span></span>
+                <div class="user_details_container">
+                  <div class="user_details">
+                    <span class="user_name">Loading</span>
+                    <span class="student_id">Student ID: Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard_body help_center">
+            <div id="loader">
+              <span class="loader"></span>
+            </div>
+            <h1 class="help_center_heading">Student Help Desk</h1>
+            <p class="help_center_content">
+              Welcome to the Student Help Desk! We're here to assist you with
+              any questions or issues you may have during your academic journey
+              using our Lms platform. we're here to provide guidance and
+              support. <br>We can assist you with the Learning Management Systems
+              (LMS) through:
+            </p>
+            <ol class="help_center_list">
+              <li>
+                Navigating through your institution's learning management
+                system.
+              </li>
+              <li>
+                Providing guidance on accessing course materials, assignments,
+                and grades.
+              </li>
+              <li>
+                Assisting with LMS features such as discussion boards, quizzes,
+                and forums.
+              </li>
+              <li>Troubleshooting LMS-related problems and errors.</li>
+            </ol>
+
+            <a class="help_center_btn" href="mailto:pluralcode102@gmail.com"
+              >Send A Message</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./help_center.js"></script>
+    <script src="./menu-toggle.js"></script>
+  </body>
+</html>

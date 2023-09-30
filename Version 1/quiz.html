@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <title>Student Dashboard - Quiz</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <link rel="stylesheet" href="./quiz.css" />
+    <script src="./protected-routes.js"></script>
+  </head>
+  <body class="my_course" oncontextmenu="return false">
+    <main>
+      <section id="nav_list">
+        <div class="logo">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
+        </div>
+        <div>
+          <nav>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./dashboard.html">
+                <i class="bx bxs-dashboard"></i>
+                <span>My Courses</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./profile.html">
+                <i class="bx bx-user"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./help_center.html">
+                <i class="bx bx-help-circle"></i>
+                <span>Help Center</span>
+              </a>
+            </div>
+            <div class="nav-item" id="logout_button">
+              <div class="nav_item_line"></div>
+              <a href="#">
+                <i class="bx bx-log-out"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </section>
+      <section>
+        <div class="dashboard_main">
+          <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+            <div class="profile_nav">
+              <div class="profile_name">
+                <span class="initials"><span>MP</span></span>
+                <div class="user_details_container">
+                  <div class="user_details">
+                    <span class="user_name">Loading...</span>
+                    <span class="student_id">Student ID: Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard_body">
+            <div class="community__">
+              <a href="" id="goBackLink"
+                ><i class="bx bxs-chevron-left-circle"></i> Go Back</a
+              >
+            </div>
+
+            <div class="quiz_container">
+              <div id="quiz_results">
+                <div class="quiz_results_details">
+                  <div class="quiz_results_text">
+                    <div class="success_fail_text">
+                      <i class="bx bx-check-circle"></i>
+                      <h3 id="congrats">Congratulations ! You Passed</h3>
+                      <h3 id="failed">Sorry ! You Didn't Pass The Quiz</h3>
+                    </div>
+                  </div>
+                  <div class="spans">
+                    <span>Grade Received: <span id="score">---</span></span>
+                    <span>| To pass 70% or higher</span>
+                  </div>
+                </div>
+                <div class="quiz_results_btns">
+                  <button class="quiz_action_btn" id="next_module">
+                    Next Module
+                  </button>
+                  <button class="quiz_action_btn" id="continue_module">
+                    Continue
+                  </button>
+                  <button class="quiz_action_btn view_result" id="view_results">
+                    View Results
+                  </button>
+                  <button class="quiz_action_btn" id="try_again">
+                    Try Again
+                  </button>
+                </div>
+              </div>
+              <div id="quiz_container">
+                <h3>Assessment: Quiz</h3>
+                <button id="submitQuiz">Submit</button>
+                <button style="display: none" id="tryQuizAgain">
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./quiz.js"></script>
+    <script src="./menu-toggle.js"></script>
+  </body>
+</html>

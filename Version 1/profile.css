@@ -1,0 +1,180 @@
+@font-face {
+  font-family: "Gilroy_Thin";
+  src: url(../assets/fonts/Gilroy-Thin.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Regular";
+  src: url(../assets/fonts/Gilroy-Regular.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Medium";
+  src: url(../assets/fonts/Gilroy-Medium.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Semibold";
+  src: url(../assets/fonts/Gilroy-SemiBold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Bold";
+  src: url(../assets/fonts/Gilroy-Bold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Black";
+  src: url(../assets/fonts/Gilroy-Black.ttf);
+}
+
+:root {
+  /* //font family */
+  --font-gilroy-thin: "Gilroy_Thin", sans-serif;
+  --font-gilroy-regular: "Gilroy_Regular", sans-serif;
+  --font-gilroy-medium: "Gilroy_Medium", sans-serif;
+  --font-gilroy-semibold: "Gilroy_Semibold", sans-serif;
+  --font-gilroy-bold: "Gilroy_Bold", sans-serif;
+  --font-gilroy-black: "Gilroy_Black", sans-serif;
+  /* //font size */
+  --heading-1: 36px;
+  --big-test: 20px;
+  --normal-text: 17px;
+  --small-text: 15px;
+  /* //colors */
+  --pc-blue: #222057;
+  --pc-black: #232323;
+  --pc-orange: #f8991d;
+  --pc-light-gray: #939393;
+  --pc-dark-gray: #323232;
+  --pc-white-white: #ffffff;
+  --pc-bg: #f5f6fa;
+}
+
+.profile__holder {
+  position: relative;
+}
+
+.profile__ input {
+  font-size: var(--small-text);
+  color: var(--pc-dark-gray);
+  font-family: var(--font-gilroy-regular);
+}
+
+.profile__ input:disabled {
+  background-color: var(--pc-bg);
+}
+#response-modal {
+  display: none;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.471);
+  height: 100%;
+  width: 100%;
+  color: white;
+}
+
+#response-modal .modal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 35rem 15rem;
+}
+
+#response-modal .modal-content #modal-message {
+  font-family: var(--font-gilroy-semibold);
+  font-size: 24px;
+  text-transform: capitalize;
+  color: var(--pc-white-white);
+  text-shadow: 0px 0px 1px var(--pc-dark-gray);
+}
+
+.Id_information_holder,
+.Reference_information_holder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1.8rem;
+}
+
+.Reference_information_holder_1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row !important;
+  width: 100%;
+  gap: 1.8rem;
+}
+
+.Reference_information_holder_1 div,
+.Id_information_holder div,
+.Reference_information_holder div {
+  width: 50%;
+}
+
+.Id_information_select {
+  width: 50%;
+}
+.personal_information > div,
+.Id_information div:last-of-type {
+  padding-top: 10px;
+  margin-bottom: 0;
+}
+
+.password_point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#save_btn {
+  margin-top: 45px;
+}
+
+
+
+.password_input {
+  position: relative;
+}
+
+.password_input span {
+  position: absolute;
+  right: 0;
+  top: 28%;
+  right: 20px;
+  cursor: pointer;
+}
+
+#show_password {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .profile_form_container button {
+    width: 100%;
+  }
+  .password_point {
+    flex-direction: column;
+  }
+  #response-modal .modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20rem 3rem;
+  }
+  .Id_information_holder,
+  .Reference_information_holder {
+    flex-direction: column;
+  }
+  .Reference_information_holder_1 {
+    flex-direction: column !important;
+  }
+  .Reference_information_holder_1 div,
+  .Id_information_holder div,
+  .Reference_information_holder div {
+    width: 100%;
+  }
+
+  .Id_information_select {
+    width: 100%;
+  }
+}

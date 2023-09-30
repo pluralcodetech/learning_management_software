@@ -1,0 +1,130 @@
+@font-face {
+  font-family: "Gilroy_Thin";
+  src: url(../assets/fonts/Gilroy-Thin.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Italic";
+  src: url(../assets/fonts/Gilroy-LightItalic.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Regular";
+  src: url(../assets/fonts/Gilroy-Regular.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Medium";
+  src: url(../assets/fonts/Gilroy-Medium.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Semibold";
+  src: url(../assets/fonts/Gilroy-SemiBold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Bold";
+  src: url(../assets/fonts/Gilroy-Bold.ttf);
+}
+@font-face {
+  font-family: "Gilroy_Black";
+  src: url(../assets/fonts/Gilroy-Black.ttf);
+}
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&display=swap");
+
+:root {
+  /* //font family */
+  --font-gilroy-thin: "Gilroy_Thin", sans-serif;
+  --font-gilroy-italic: "Gilroy_Italic", sans-serif;
+
+  --font-gilroy-regular: "Gilroy_Regular", sans-serif;
+  --font-gilroy-medium: "Gilroy_Medium", sans-serif;
+  --font-gilroy-semibold: "Gilroy_Semibold", sans-serif;
+  --font-gilroy-bold: "Gilroy_Bold", sans-serif;
+  --font-gilroy-black: "Gilroy_Black", sans-serif;
+  /* //font size */
+  --heading-1: 28px;
+  --heading-2: 22px;
+  --big-text: 18px;
+  --normal-text: 16px;
+  --small-text: 14px;
+  /* //colors */
+  --pc-blue: #222057;
+  --pc-black: #232323;
+  --pc-orange: #f8991d;
+  --pc-light-gray: #939393;
+  --pc-dark-gray: #323232;
+  --pc-white-white: #ffffff;
+  --pc-bg: #f5f6fa;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body,
+html {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--pc-bg);
+  font-family: "Montserrat", sans-serif;
+  color: var(--pc-black);
+}
+
+html {
+  background: url("https://static.pexels.com/photos/818/sea-sunny-beach-holiday.jpg");
+  background-size: cover;
+  background-position: bottom;
+}
+
+.error {
+  text-align: center;
+  padding: 16px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+}
+
+h1 {
+  margin: -10px 0 -30px;
+  font-size: calc(17vw + 40px);
+  letter-spacing: -17px;
+  color: var(--pc-blue);
+  font-family: var(--font-gilroy-bold);
+}
+
+p {
+  font-family: var(--font-gilroy-regular);
+  font-size: 20px;
+  color: var(--pc-blue);
+  margin: 8px 0 38px 0;
+  font-weight: bold;
+}
+
+button,
+button:focus {
+  border: 0;
+  outline: 0 !important;
+}
+
+button {
+  width: 180px;
+  padding: 14.5px 16px 14.5px 12.5px;
+  vertical-align: top;
+  color: grey;
+  background: var(--pc-orange);
+  font-family: var(--font-gilroy-semibold);
+  font-size: var(--big-text);
+  color: var(--pc-white-white);
+  cursor: pointer;
+  transition: all 0.4s;
+}
+
+button:hover {
+  color: white;
+  background: #f8991da9;
+}

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <title>Student Profile</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <link rel="stylesheet" href="./profile.css" />
+    <script src="./protected-routes.js"></script>
+  </head>
+  <body class="profile">
+    <main>
+      <section id="nav_list">
+        <div class="logo">
+          <img src="./assets/PluralCode 4.png" alt="Logo" class="lg_device" />
+          <img src="./assets/sm_device.png" alt="" class="sm_device" />
+        </div>
+        <div>
+          <nav>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./dashboard.html">
+                <i class="bx bxs-dashboard"></i>
+                <span>My Courses</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./profile.html">
+                <i class="bx bx-user"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <div class="nav_item_line"></div>
+              <a href="./help_center.html">
+                <i class="bx bx-help-circle"></i>
+                <span>Help Center</span>
+              </a>
+            </div>
+            <div class="nav-item" onclick="logoutUser()">
+              <div class="nav_item_line"></div>
+              <a href="#">
+                <i class="bx bx-log-out"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </section>
+      <section>
+        <div class="dashboard_main">
+          <div class="header">
+            <div class="mobile_nav">
+              <div>
+                <a href="./index.html">
+                  <img
+                    src="./assets/PluralCode 4.png"
+                    alt="Logo"
+                    class="lg_device"
+                  />
+                </a>
+              </div>
+              <i class="bx bx-menu-alt-right" id="menu_toggle"></i>
+              <i class="bx bx-x" id="menu_toggle2"></i>
+            </div>
+
+            <div class="profile_nav">
+              <div class="profile_name">
+                <span class="initials"><span>...</span></span>
+                <div class="user_details_container">
+                  <div class="user_details">
+                    <span class="user_name">Loading</span>
+                    <span class="student_id">Student ID: Loading</span>
+                  </div>
+                </div>
+              </div>
+              <div class="toggle_profile_container">
+                <div class="toggle-item">
+                  <i class="bx bx-user"></i>
+                  <a href="#"> Profile </a>
+                </div>
+                <div class="toggle-item">
+                  <i class="bx bx-log-out"></i>
+                  <a href="#"> Logout </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="profile__holder">
+            <div class="profile__">
+              <div class="profile_container" id="profile__holder">
+                <div class="profile_header">
+                  <h3>My Profile</h3>
+                  <p>Kindly click on any of the fields to edit</p>
+                </div>
+                <div class="profile_form_container">
+                  <span>Personal Information</span>
+                  <form class="profile_form">
+                    <!-- // Personal Info -->
+                    <div class="personal_information">
+                      <p>
+                        <label for="full-name">Full Name</label>
+                        <input
+                          type="text"
+                          name="full-name"
+                          placeholder="Your Full Name"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="student-id">Student ID</label>
+                        <input
+                          name="student-id"
+                          type="text"
+                          placeholder="PLC/2023/3456"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="phone-number">Phone Number</label>
+                        <input
+                          type="text"
+                          name="phone-number"
+                          placeholder="Your Phone Number"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="email">Email*</label>
+                        <input
+                          type="email"
+                          placeholder="mabelpraiseo@gmail.com"
+                          name="email"
+                          disabled
+                        />
+                      </p>
+                      <p>
+                        <label for="state">State</label>
+                        <input
+                          type="text"
+                          placeholder="Enter State"
+                          name="state"
+                          disabled
+                        />
+                      </p>
+                      <div style="margin-top: 17px">
+                        <div class="password_point">
+                          <button
+                            type="button"
+                            id="edit_password_button"
+                            style="margin-top: 0; height: 48px"
+                          >
+                            Edit password
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Password change modal -->
+                    <!-- The modal overlay element -->
+                    <div id="modal-overlay"></div>
+
+                    <!-- Modal HTML -->
+                    <div class="edit_passport_modal" id="password-modal">
+                      <div class="modal-content">
+                        <form id="password-form">
+                          <label for="old-password">Old Password</label>
+                          <div class="password_input">
+                            <span id="show_password">
+                              <i class="bx bx-hide"></i>
+                            </span>
+                            <span id="hide_password">
+                              <i class="bx bx-show"></i>
+                            </span>
+                            <input
+                              type="password"
+                              id="old-password"
+                              name="old-password"
+                            />
+                          </div>
+
+                          <label for="new-password">New Password</label>
+                          <input
+                            type="password"
+                            id="new-password"
+                            name="new-password"
+                          />
+
+                          <label for="confirm-password"
+                            >Confirm New Password</label
+                          >
+                          <input
+                            type="password"
+                            id="confirm-password"
+                            name="confirm-password"
+                          />
+
+                          <div class="edit_password_btns">
+                            <button type="button" id="cancel-button">
+                              Cancel
+                            </button>
+                            <button type="submit" id="update-button">
+                              Save
+                              <i
+                                style="margin-left: 8px"
+                                id="spinner"
+                                class="fa fa-circle-o-notch fa-spin"
+                              ></i>
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                    <!-- // Emergency Info -->
+                    <div class="emergency_information" style="margin-top: 10px">
+                      <span>Reference Information I</span>
+                      <div class="Reference_information_holder_1">
+                        <div>
+                          <label for="reference-name">Reference Name</label>
+                          <input
+                            type="text"
+                            placeholder="Enter reference contact name"
+                            name="refname1"
+                          />
+                        </div>
+                        <div>
+                          <label for="reference">Reference Phone Number</label>
+                          <input
+                            type="text"
+                            placeholder="Enter your refernece phone number"
+                            name="refphone1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!-- // Reference Info -->
+                    <div class="Reference_information">
+                      <span>Reference Information II</span>
+                      <div class="Reference_information_holder">
+                        <div style="margin-top: 17px">
+                          <label for="reference-name">Reference Name</label>
+                          <input
+                            style="margin-top: 10px"
+                            type="text"
+                            placeholder="Enter reference name"
+                            name="refname2"
+                          />
+                        </div>
+                        <div style="margin-top: 17px">
+                          <label for="emergency-phone-number"
+                            >Reference Phone Number</label
+                          >
+                          <input
+                            style="margin-top: 10px"
+                            type="text"
+                            placeholder="Enter your reference phone number"
+                            name="refphone2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!-- // Id Info -->
+                    <div class="Id_information">
+                      <span>ID Information</span>
+                      <div class="Id_information_holder">
+                        <div
+                          style="margin-top: 17px"
+                          class="Id_information_select"
+                        >
+                          <label for="id-type">Select ID Type</label>
+                          <select name="id-type" id="id_type">
+                            <option value="" disabled selected hidden></option>
+                            <option value="national_id">National ID</option>
+                            <option value="nin_slip">NIN Slip</option>
+                            <option value="driver_license">
+                              Driver License
+                            </option>
+                            <option value="passport">Passport</option>
+                          </select>
+                        </div>
+                        <div style="margin-top: 17px">
+                          <label for="upload_file">Upload ID</label>
+                          <input
+                            type="file"
+                            name="upload_file"
+                            id="id_image"
+                            style="margin-top: 11px; border: none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <button id="save_btn">Save</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal" id="response-modal">
+              <div class="modal-content">
+                <p id="modal-message"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./profile.js"></script>
+    <script src="./menu-toggle.js"></script>
+    <script src="./protected-routes.js"></script>
+  </body>
+</html>
